@@ -1,31 +1,22 @@
 import LinkIcon from '@mui/icons-material/Link';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Chip } from '@mui/material';
-import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
-import Link from '@mui/material/Link'
 import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react'
 
 export default function Form() {
     const [loading, setLoading] = useState(false);
-    const [shortUrl, setShortUrl] = useState('')
     const [shortUrlAbs, setShortUrlAbs] = useState('')
     const [show, setShow] = useState(false);
     const [error, setError] = useState(false);
-    const [valid, setValid] = useState(false)
+    const [valid, setValid] = useState(false);
 
     const validURL = string => {
-        try {
-            let url = new URL(string)
-        } catch (error) {
-            return false
-        }
-        return true
+        let pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
+        return pattern.test(string)
     }
 
     const handleInput = event => {
@@ -47,10 +38,10 @@ export default function Form() {
             method: 'POST',
             body: event.target.fullURL.value,
         })
+
         const data = await response.json()
 
         if (data.success) {
-            setShortUrl(`${data.message}`)
             setShortUrlAbs(`http://${process.env.DOMAIN}/${data.message}`)
             setShow(true)
         } else {
@@ -70,7 +61,6 @@ export default function Form() {
                         onInput={handleInput}
                         id="outlined-basic"
                         label="URL"
-                        type="url"
                         name="fullURL"
                         variant="outlined"
                         sx={{

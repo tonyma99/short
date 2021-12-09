@@ -1,29 +1,21 @@
 import { connectToDatabase } from '../../util/mongodb'
 
 export default async function handler(req, res) {
-    let valid = true
-    try {
-        const test = await fetch(req.body, { method: 'HEAD' });
-        if (test.status !== 200) {
-            valid = false
-        }
-    } catch (error) {
-        valid = false
-    }
-    
-    if (!valid) {
-        return res.json({
-            message: 'Invalid URL',
-            success: false
-        })
-    }
-
     const shortid = require('shortid').generate()
     const { db } = await connectToDatabase();
+
+    let fullUrl;
+
+    try {
+        new URL('https://' + req.body)
+        fullUrl = 'https://' + req.body
+    } catch (_) {
+        fullUrl = 'http://' + req.body
+    }
     
     await db.collection('links').insertOne({
-        fullURL: req.body,
-        shortURL: shortid
+        fullUrl: fullUrl,
+        shortUrl: shortid
     })
 
     return res.json({

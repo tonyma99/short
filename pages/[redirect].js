@@ -1,19 +1,17 @@
 import { connectToDatabase } from "../util/mongodb";
 
-export default function Redirect() {
-    return
-}
+export default function Redirect() { }
 
 export async function getServerSideProps(context) {
-    const { shortURL } = context.query
+    const { redirect } = context.query
     const { db } = await connectToDatabase();
 
-    const data = await db.collection('links').findOne({ shortURL: shortURL })
+    const data = await db.collection('links').findOne({ shortUrl: redirect })
     
     if (data) {
         return {
             redirect: {
-                destination: data.fullURL,
+                destination: data.fullUrl,
                 permanent: false
             }
         }
