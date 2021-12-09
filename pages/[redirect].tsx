@@ -1,8 +1,9 @@
 import { connectToDatabase } from "../util/mongodb";
+import { GetServerSideProps } from "next";
 
 export default function Redirect() { }
 
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async context => {
     const { redirect } = context.query
     const { db } = await connectToDatabase();
 

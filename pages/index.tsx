@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import Footer from '../components/Footer'
-import Form from '../components/Form'
-import Header from '../components/Header'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
+import Footer from '../components/Footer'
+import Form from '../components/Form'
+import Header from '../components/Header'
 
 export default function Home() {
     return (
