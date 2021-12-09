@@ -59,10 +59,16 @@ export default function Form() {
                     <TextField
                         error={error}
                         onInput={handleInput}
-                        id="outlined-basic"
+                        id="inputField"
                         label="URL"
                         name="fullURL"
                         variant="outlined"
+                        autoComplete="off"
+                        inputProps={{
+                            autoCapitalize: 'off',
+                            autoCorrect: 'off',
+                            spellCheck: 'false'
+                        }}
                         sx={{
                             flex: 1
                         }} />
