@@ -1,39 +1,41 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import LinkIcon from '@mui/icons-material/Link';
-import LoadingButton from '@mui/lab/LoadingButton';
-import Chip from '@mui/material/Chip';
-import Container from '@mui/material/Container';
-import Fade from '@mui/material/Fade';
+import DeleteIcon from '@mui/icons-material/Delete'
+import LinkIcon from '@mui/icons-material/Link'
+import LoadingButton from '@mui/lab/LoadingButton'
+import Chip from '@mui/material/Chip'
+import Container from '@mui/material/Container'
+import Fade from '@mui/material/Fade'
 import TextField from '@mui/material/TextField'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
-const inputRef = React.createRef<HTMLInputElement>();
+const inputRef = React.createRef<HTMLInputElement>()
 
 export default function Form() {
-    const [error, setError] = useState(false);
-    const [input, setInput] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false)
+    const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(false)
     const [shortUrlAbs, setShortUrlAbs] = useState('')
-    const [show, setShow] = useState(false);
-    const [text, setText] = useState('');
-    const [valid, setValid] = useState(false);
+    const [show, setShow] = useState(false)
+    const [text, setText] = useState('')
+    const [valid, setValid] = useState(false)
 
-    const validURL = (url: string) =>{
-        let pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
-
-        if (pattern.test(url)) {
-            setValid(true)
-            setError(false)
-            return true
-        } else {
-            setValid(false)
-            input.length > 0 ? setError(true) : setError(false)
-            return false
+    const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
+    
+    useEffect(() => {
+        const validURL = () =>{
+            const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
+            if (pattern.test(input)) {
+                setValid(true)
+                setError(false)
+            } else {
+                setValid(false)
+                input.length > 0 ? setError(true) : setError(false)
+            }
         }
-    }
+        validURL()
+    }, [input])
 
     const sleep = (delay: number) => {
-        return new Promise( res => setTimeout(res, delay) );
+        return new Promise(res => setTimeout(res, delay))
     }
 
     const handleClick = async () => {
@@ -45,14 +47,14 @@ export default function Form() {
 
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
         setInput(event.target.value)
-        validURL(input)
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        if (!validURL(input)) {
-            setInput('')
+        if (!pattern.test(input)) {
+            setValid(false)
+            input.length > 0 ? setError(true) : setError(false)
             return
         }
 
