@@ -39,6 +39,7 @@ export default function Form() {
         event.preventDefault()
 
         if (!validURL(inputFieldRef.current.value)) {
+            event.target.reset()
             return
         }
 
