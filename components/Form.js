@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade';
 import TextField from '@mui/material/TextField'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react'
+import React from 'react';
 
 export default function Form() {
     const [loading, setLoading] = useState(false);
@@ -14,26 +15,36 @@ export default function Form() {
     const [error, setError] = useState(false);
     const [valid, setValid] = useState(false);
 
+    const inputFieldRef = React.createRef();
+
     const validURL = string => {
         let pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
-        return pattern.test(string)
-    }
 
-    const handleInput = event => {
-        if (validURL(event.target.value)) {
+        if (pattern.test(string)) {
             setValid(true)
             setError(false)
+            return true
         } else {
             setValid(false)
-            event.target.value.length > 0 ? setError(true) : setError(false)
+            inputFieldRef.current.value.length > 0 ? setError(true) : setError(false)
+            return false
         }
     }
 
-    const handleClick = async event => {
+    const handleInput = event => {
+        validURL(event.target.value)
+    }
+
+    const handleSubmit = async event => {
         event.preventDefault()
+
+        if (!validURL(inputFieldRef.current.value)) {
+            return
+        }
+
         setShow(false)
         setLoading(true)
-        
+
         const response = await fetch('/api/shorten', {
             method: 'POST',
             body: event.target.fullURL.value,
@@ -54,7 +65,7 @@ export default function Form() {
     
     return (
         <>
-            <form onSubmit={handleClick}>
+            <form onSubmit={handleSubmit} noValidate>
                 <Container disableGutters sx={{ display: 'flex' }}>
                     <TextField
                         error={error}
@@ -62,6 +73,7 @@ export default function Form() {
                         id="inputField"
                         label="URL"
                         name="fullURL"
+                        type="url"
                         variant="outlined"
                         autoComplete="off"
                         inputProps={{
@@ -69,6 +81,7 @@ export default function Form() {
                             autoCorrect: 'off',
                             spellCheck: 'false'
                         }}
+                        inputRef={inputFieldRef}
                         sx={{
                             flex: 1
                         }} />
