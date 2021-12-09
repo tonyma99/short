@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToDatabase } from '../../util/mongodb'
+import { nanoid } from 'nanoid'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const shortid = require('shortid').generate()
     const { db } = await connectToDatabase();
 
     let fullUrl;
+    let shortUrl = nanoid(10)
 
     try {
         new URL('https://' + req.body)
@@ -16,11 +17,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     await db.collection('links').insertOne({
         fullUrl: fullUrl,
-        shortUrl: shortid
+        shortUrl: shortUrl
     })
 
     return res.json({
-        message: shortid,
+        message: shortUrl,
         success: true
     });
 }
