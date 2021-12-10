@@ -5,14 +5,20 @@ import { nanoid } from 'nanoid'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const { db } = await connectToDatabase();
 
-    let fullUrl;
+    let fullUrl
     let shortUrl = nanoid(10)
 
-    try {
-        new URL('https://' + req.body)
-        fullUrl = 'https://' + req.body
-    } catch (_) {
-        fullUrl = 'http://' + req.body
+    let protocolRegExp:RegExp = new RegExp(/^(http|https):\/\//);
+
+    if (!protocolRegExp.test(req.body)) {
+        try {
+            new URL('https://' + req.body)
+            fullUrl = 'https://' + req.body
+        } catch (_) {
+            fullUrl = 'http://' + req.body
+        }
+    } else {
+        fullUrl = req.body
     }
     
     await db.collection('links').insertOne({
