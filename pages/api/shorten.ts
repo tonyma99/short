@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { db } = await connectToDatabase();
 
     let fullUrl
-    let shortUrl = nanoid(10)
+    let shortUrl = nanoid(8)
 
     let protocolRegExp:RegExp = new RegExp(/^(http|https):\/\//);
 
