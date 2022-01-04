@@ -23,7 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     await db.collection('links').insertOne({
         fullUrl: fullUrl,
-        shortUrl: shortUrl
+        shortUrl: shortUrl,
+        count: 0
     })
 
     return res.json({
