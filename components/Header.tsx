@@ -8,7 +8,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 export default function Header() {
   return (
     <>
-        <Box sx={{ display: 'flex', borderBottom: '1px solid #c1c1c1', minHeight: 64 }}> 
+        <Box sx={{ display: 'flex', minHeight: 64 }}> 
             <Container maxWidth="md" sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                 <Typography variant="h6" component="div">
                 <Link href="/" underline="none" sx={{ fontWeight: 'bold' }}>

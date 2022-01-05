@@ -125,8 +125,8 @@ export default function Form() {
                     onDelete={() => {setShow(false)}}
                     deleteIcon={<DeleteIcon />}
                     icon={<LinkIcon />}
-                    variant="outlined"
-                    sx={{ backgroundColor: '#f4f4f4', borderRadius: 1.5 ,fontSize: 16, height: 56, px: 1, my: 4 }}
+                    color="info"
+                    sx={{ borderRadius: 1, fontSize: 16, height: 56, px: 1, my: 4 }}
                 />
             </Fade>
         </>
