@@ -1,26 +1,32 @@
 import '../styles/globals.css'
 import { AppProps } from 'next/app'
-import * as React from 'react';
+import { useState, useMemo } from 'react';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function App({ Component, pageProps }: AppProps) {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const [mode, setMode] = useState<'light' | 'dark'>(prefersDarkMode ? 'light' : 'dark');
 
-    const theme = React.useMemo(
+    const toggleTheme = () => {
+        setMode(mode == 'light' ? 'dark' : 'light')
+    }
+
+    const theme = useMemo(
         () =>
             createTheme({
                 palette: {
-                mode: prefersDarkMode ? 'dark' : 'light',
+                    mode,
                 },
             }),
-        [prefersDarkMode],
+        [mode],
     );
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Component {...pageProps} />
+            <Component {...pageProps} toggleTheme={toggleTheme}/>
         </ThemeProvider>
     )
 }

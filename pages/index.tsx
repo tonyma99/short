@@ -1,12 +1,15 @@
 import Head from 'next/head'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
+import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Footer from '../components/Footer'
 import Form from '../components/Form'
 import Header from '../components/Header'
+import Brightness4 from '@mui/icons-material/Brightness4'
+import { MouseEventHandler } from 'react'
 
-export default function Home() {
+export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorElement> }) {
     return (
         <>
             <Head>
@@ -22,13 +25,13 @@ export default function Home() {
                 
                 <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-                        <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold', py: 2 }}>
+                        <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold', py: 0 }}>
                             Short
                         </Typography>
 
-                        <Typography variant="h5" component="p" sx={{ pb: 4 }}>
-                            URL shortener
-                        </Typography>
+                        <IconButton onClick={props.toggleTheme as any} sx={{ mt: 1, mb: 3 }}>
+                            <Brightness4 />
+                        </IconButton>
 
                         <Form />
                     </Container>                    
