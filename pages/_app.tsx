@@ -6,9 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function App({ Component, pageProps }: AppProps) {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const [mode, setMode] = useState<'light' | 'dark'>(prefersDarkMode ? 'light' : 'dark');
-
+    const [mode, setMode] = useState<'light' | 'dark'>('dark');
     const toggleTheme = () => {
         setMode(mode == 'light' ? 'dark' : 'light')
     }
