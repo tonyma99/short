@@ -1,20 +1,25 @@
-import DeleteIcon from '@mui/icons-material/Delete'
-import LinkIcon from '@mui/icons-material/Link'
 import LoadingButton from '@mui/lab/LoadingButton'
-import Chip from '@mui/material/Chip'
+import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
+import Divider from '@mui/material/Divider'
 import Fade from '@mui/material/Fade'
+import Link from '@mui/material/Link'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
 import TextField from '@mui/material/TextField'
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 
 const inputRef = React.createRef<HTMLInputElement>()
+let rows: { full: string, short: string }[] = []
 
 export default function Form() {
     const [error, setError] = useState(false)
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
-    const [shortUrl, setShortUrl] = useState('')
-    const [show, setShow] = useState(false)
+    const [hidden, setHidden] = useState(true)
     const [valid, setValid] = useState(false)
 
     const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
@@ -33,16 +38,16 @@ export default function Form() {
         validURL()
     }, [input])
 
-    const sleep = (delay: number) => {
-        return new Promise(res => setTimeout(res, delay))
-    }
-
-    const handleClick = async () => {
-        navigator.clipboard.writeText(shortUrl)
-        setShortUrl("Copied to clipboard")
-        await sleep(1000)
-        setShortUrl(shortUrl)
-    }
+    useEffect(() => {
+        const links = localStorage.getItem("links")
+        if (links && JSON.parse(links).length > 0) {
+            rows = JSON.parse(localStorage.getItem("links"))
+            setHidden(false)
+        } else {
+            localStorage.setItem("links", JSON.stringify([]))
+            setHidden(true)
+        }
+    })
 
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
         setInput(event.target.value)
@@ -57,7 +62,6 @@ export default function Form() {
             return
         }
 
-        setShow(false)
         setLoading(true)
 
         const response = await fetch('/api/shorten', {
@@ -66,11 +70,18 @@ export default function Form() {
         })
 
         if (response.status == 200) {
-            setShortUrl((await response.json()).shortUrl)
-            setShow(true)
+            rows = JSON.parse(localStorage.getItem("links"))
+            rows.push({
+                full: input,
+                short: (await response.json()).shortUrl
+            })
+            if (rows.length > 5) rows.shift()
+            localStorage.setItem("links", JSON.stringify(rows))
         } else {
             setError(true)
         }
+        
+        setHidden(false)
         setInput('')
         inputRef.current.blur()
         setValid(false)
@@ -107,23 +118,81 @@ export default function Form() {
                         type="submit"
                         variant="contained"
                         sx={{
-                            ml: 1
+                            fontSize: '1.1em',
+                            fontWeight: 'bold',
+                            ml: 1,
+                            textTransform: 'none'
                         }}>
                         Shorten
                     </LoadingButton>
                 </Container>
             </form>
 
-            <Fade in={show}>
-                <Chip
-                    label={shortUrl}
-                    onClick={handleClick}
-                    onDelete={() => {setShow(false)}}
-                    deleteIcon={<DeleteIcon />}
-                    icon={<LinkIcon />}
-                    color="info"
-                    sx={{ borderRadius: 1, fontSize: 16, height: 56, px: 1, my: 4 }}
-                />
+            <Fade in={!hidden} timeout={350}>
+                <Box hidden={hidden}>
+                    <Divider sx={{ my: 2 }}></Divider>
+                    <TableContainer
+                        hidden={hidden}
+                        sx={{
+                            borderColor: 'primary.main',
+                            borderRadius: 1,
+                            borderStyle: 'solid',
+                            borderWidth: 1,
+                            my: 1
+                        }}>
+                        <Table>
+                            <TableBody>
+                                {(rows.slice(0).reverse()).map((row) => (
+                                    <TableRow
+                                    hover
+                                    key={rows.indexOf(row)}
+                                    sx={{ 
+                                        '&:first-of-type td, &:first-of-type th': { fontWeight: 'bold' },
+                                        '&:last-child td, &:last-child th': { border: 0 }
+                                    }}
+                                    >
+                                        <TableCell scope="row">
+                                            {row.full}
+                                        </TableCell>
+                                        <TableCell align="right" scope="row">{row.short}</TableCell>
+                                        <TableCell align="right" scope="row" sx={{ width: '1px' }}>
+                                            <Link
+                                                onClick={() => navigator.clipboard.writeText(row.short)}
+                                                sx={{
+                                                    '&:active': {
+                                                        color: 'text.primary',
+                                                    },
+                                                    cursor: 'pointer',
+                                                    textDecoration: 'none',
+                                                    textTransform: 'none',
+                                                    whiteSpace: 'nowrap',
+                                                    userSelect: 'none'
+                                                }}>
+                                                Copy to clipboard
+                                            </Link>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Link
+                        onClick={() => {setHidden(true); localStorage.setItem("links", JSON.stringify([]))}}
+                        sx={{
+                            '&:active': {
+                                color: 'text.primary',
+                            },
+                            cursor: 'pointer',
+                            fontSize: '0.8em',
+                            fontWeight: 'bold',
+                            textDecoration: 'none',
+                            textTransform: 'none',
+                            whiteSpace: 'nowrap',
+                            userSelect: 'none'
+                        }}>
+                        Clear
+                    </Link>
+                </Box>
             </Fade>
         </>
     )

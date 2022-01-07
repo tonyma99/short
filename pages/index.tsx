@@ -24,8 +24,8 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
                 <Header />
                 
                 <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-                        <Typography variant="h1" component="h1" sx={{ fontWeight: 'bold', py: 0 }}>
+                    <Container maxWidth="md" sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant="h1" component="h1" sx={{ fontSize: {xs: '72px', sm: 'h1.fontSize'} ,fontWeight: 'bold', py: 0 }}>
                             Short
                         </Typography>
 

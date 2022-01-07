@@ -8,7 +8,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 export default function Footer() {
   return (
     <>
-        <Box sx={{ display: 'flex', minHeight: 64 }}> 
+        <Box sx={{ display: 'flex', p: 1 }}> 
             <Container sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
             <Link href="https://tonyma.ca/" sx={{ mx: '4px' }}>
                 <LanguageIcon fontSize="medium" />
