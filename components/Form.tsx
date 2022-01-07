@@ -151,11 +151,11 @@ export default function Form() {
                                         '&:last-child td, &:last-child th': { border: 0 }
                                     }}
                                     >
-                                        <TableCell scope="row">
+                                        <TableCell scope="row" sx={{ whiteSpace: 'nowrap' }}>
                                             {row.full}
                                         </TableCell>
-                                        <TableCell align="right" scope="row">{row.short}</TableCell>
-                                        <TableCell align="right" scope="row" sx={{ width: '1px' }}>
+                                        <TableCell align="right" scope="row" sx={{ whiteSpace: 'nowrap' }}>{row.short}</TableCell>
+                                        <TableCell align="right" scope="row" sx={{ whiteSpace: 'nowrap', width: 0 }}>
                                             <Link
                                                 onClick={() => navigator.clipboard.writeText(row.short)}
                                                 sx={{
