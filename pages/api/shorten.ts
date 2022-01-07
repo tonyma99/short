@@ -1,34 +1,49 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next'
 import { connectToDatabase } from '../../util/mongodb'
 import { nanoid } from 'nanoid'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const { db } = await connectToDatabase();
+    if (req.method == 'POST') {
+        const { db } = await connectToDatabase()
 
-    let fullUrl
-    let shortUrl = nanoid(8)
+        let full
+        let short = nanoid(8)
 
-    let protocolRegExp:RegExp = new RegExp(/^(http|https):\/\//);
+        let clientIp = req.headers['x-real-ip'] ? req.headers['x-real-ip'] : null
+        // The following only works if the app is deployed on Vercel
+        let clientCountry = req.headers['x-vercel-ip-country'] ? req.headers['x-vercel-ip-country'] : null
+        let clientRegion = req.headers['x-vercel-ip-country-region'] ? req.headers['x-vercel-ip-country-region'] : null
+        let clientCity = req.headers['x-vercel-ip-city'] ? req.headers['x-vercel-ip-city'] : null
+    
+        let protocolRegExp:RegExp = new RegExp(/^(http|https):\/\//)
 
-    if (!protocolRegExp.test(req.body)) {
+        if (!protocolRegExp.test(req.body)) {
+            try {
+                new URL('https://' + req.body)
+                full = 'https://' + req.body
+            } catch (_) {
+                full = 'http://' + req.body
+            }
+        } else {
+            full = req.body
+        }
+        
         try {
-            new URL('https://' + req.body)
-            fullUrl = 'https://' + req.body
+            await db.collection('links').insertOne({
+                full,
+                short,
+                count: 0,
+                clicks: [],
+                clientIp,
+                clientCountry,
+                clientRegion,
+                clientCity
+            })
+            return res.status(200).json({ shortUrl: req.headers.referer + short })
         } catch (_) {
-            fullUrl = 'http://' + req.body
+            return res.status(500).json({ message: 'Internal Server Error' })
         }
     } else {
-        fullUrl = req.body
+        return res.status(405).json({ message: 'Method Not Allowed' })
     }
-    
-    await db.collection('links').insertOne({
-        fullUrl: fullUrl,
-        shortUrl: shortUrl,
-        count: 0
-    })
-
-    return res.json({
-        message: shortUrl,
-        success: true
-    });
 }

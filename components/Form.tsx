@@ -13,9 +13,8 @@ export default function Form() {
     const [error, setError] = useState(false)
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
-    const [shortUrlAbs, setShortUrlAbs] = useState('')
+    const [shortUrl, setShortUrl] = useState('')
     const [show, setShow] = useState(false)
-    const [text, setText] = useState('')
     const [valid, setValid] = useState(false)
 
     const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
@@ -39,10 +38,10 @@ export default function Form() {
     }
 
     const handleClick = async () => {
-        navigator.clipboard.writeText(shortUrlAbs)
-        setText("Copied to clipboard")
+        navigator.clipboard.writeText(shortUrl)
+        setShortUrl("Copied to clipboard")
         await sleep(1000)
-        setText(shortUrlAbs)
+        setShortUrl(shortUrl)
     }
 
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -66,11 +65,8 @@ export default function Form() {
             body: input,
         })
 
-        const data = await response.json()
-
-        if (data.success) {
-            setShortUrlAbs(`http://${process.env.DOMAIN}/${data.message}`)
-            setText(`http://${process.env.DOMAIN}/${data.message}`)
+        if (response.status == 200) {
+            setShortUrl((await response.json()).shortUrl)
             setShow(true)
         } else {
             setError(true)
@@ -120,7 +116,7 @@ export default function Form() {
 
             <Fade in={show}>
                 <Chip
-                    label={text}
+                    label={shortUrl}
                     onClick={handleClick}
                     onDelete={() => {setShow(false)}}
                     deleteIcon={<DeleteIcon />}

@@ -7,16 +7,16 @@ export const getServerSideProps: GetServerSideProps = async context => {
     const { redirect } = context.query
     const { db } = await connectToDatabase()
 
-    const data = await db.collection('links').findOne({ shortUrl: redirect })
+    const data = await db.collection('links').findOne({ short: redirect })
     
     if (data) {
         await db.collection('links').updateOne(
-            { shortUrl: redirect },
-            { $inc: {count: 1} }
+            { short: redirect },
+            { $inc: { count: 1 }, $push: { clicks: context.req.headers['x-real-ip'] } }
         )
         return {
             redirect: {
-                destination: data.fullUrl,
+                destination: data.full,
                 permanent: false
             }
         }
