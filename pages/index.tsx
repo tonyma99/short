@@ -29,7 +29,7 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
                             Short
                         </Typography>
 
-                        <IconButton onClick={props.toggleTheme as any} sx={{ mt: 1, mb: 3 }}>
+                        <IconButton onClick={props.toggleTheme as any} sx={{ color: 'text.secondary', mt: 1, mb: 3 }}>
                             <Brightness4 />
                         </IconButton>
 
