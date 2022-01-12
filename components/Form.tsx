@@ -37,8 +37,6 @@ export default function Form(props: { length: number, theme: string, prepend: bo
     const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
-
     const handleCopyButtonClicked = async (url: string) => {
         setCopied(url)
         navigator.clipboard.writeText(url)
@@ -47,6 +45,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
     }
 
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+        const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
         const value = event.target.value
         setErrorMessage('')
         if (pattern.test(value)) {
@@ -60,12 +59,6 @@ export default function Form(props: { length: number, theme: string, prepend: bo
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         inputRef.current.blur()
-        
-        if (!pattern.test(input)) {
-            setError(true)
-            setErrorMessage('Invalid URL.')
-            return
-        }
 
         setInput('')
         setLoading(true)

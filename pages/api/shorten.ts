@@ -2,13 +2,29 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { nanoid } from 'nanoid'
 import clientPromise from '../../lib/mongodb'
 
+async function checkDomain(url: string) {
+    const urlRegExp = new RegExp(/(http(s)?:\/\/.)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
+    try {
+        if (urlRegExp.test(url) && (await fetch(url, { method: 'HEAD' })).status === 200) {
+            return url
+        } else if ((await fetch('https://' + url, { method: 'HEAD' })).status === 200) {
+            return 'https://' + url
+        } else if ((await fetch('http://' + url, { method: 'HEAD' })).status === 200) {
+            return 'http://' + url
+        }
+    } catch (_) {}
+    
+    return ''
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        if (!req.body.url || (req.body.user && (!req.body.user.match('^[a-zA-Z0-9]*$') || req.body.user.length < 4 || req.body.user.length > 16))) {
-            return res.status(406).json({
+        const fullUrl = await checkDomain(req.body.url)
+        if (!fullUrl || (req.body.user && (!req.body.user.match('^[a-zA-Z0-9]*$') || req.body.user.length < 4 || req.body.user.length > 16))) {
+            return res.status(400).json({
                 error: {
-                    code: 406,
-                    message: 'Not Acceptable'
+                    code: 400,
+                    message: 'Bad Request'
                 }
             })
         }
@@ -19,21 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const length = req.body.length && req.body.length <= 20 ? req.body.length : 8
             const shortUrl = req.body.user && req.body.prepend ? req.body.user + '-' + nanoid(length) : nanoid(length)
-            
-            let fullUrl
-
-            const protocol:RegExp = new RegExp(/^(http|https):\/\//)
-
-            if (!protocol.test(req.body.url)) {
-                try {
-                    new URL('https://' + req.body.url)
-                    fullUrl = 'https://' + req.body.url
-                } catch (_) {
-                    fullUrl = 'http://' + req.body.url
-                }
-            } else {
-                fullUrl = req.body.url
-            }
 
             const userIp = req.headers['x-real-ip'] ? req.headers['x-real-ip'] : null
             // The following only works if the app is deployed on Vercel
