@@ -1,44 +1,140 @@
-import Head from 'next/head'
+import { useCallback, useEffect, useState, MouseEventHandler } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import Menu from '../components/Menu'
 import Footer from '../components/Footer'
 import Form from '../components/Form'
+import LogInMenu from '../components/LogInMenu'
 import Header from '../components/Header'
-import Brightness4 from '@mui/icons-material/Brightness4'
-import { MouseEventHandler } from 'react'
 
-export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorElement> }) {
+export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorElement>, theme:string }) {
+    const [length, setLength] = useState(8)
+    const [menu, setMenu] = useState(false)
+    const [prepend, setPrepend] = useState(false)
+    const [login, setLogin] = useState(false)
+    const [tab, setTab] = useState<'submit' | 'data'>('submit')
+    const [user, setUser] = useState<string|null>(null)
+
+    const handleChangeTheme = (event: any, newOption: string | null) => {
+        if (newOption != null) props.toggleTheme(event)
+    }
+
+    const handleChangeLength = (newOption: number) => {
+        if (newOption != null) {
+            setLength(newOption)
+
+            let savedState = JSON.parse(localStorage.getItem('state'))
+            savedState.length = newOption
+            localStorage.setItem('state', JSON.stringify(savedState))
+        }
+    }
+
+    const handleChangePrepend = (newOption: boolean) => {
+        if (newOption != null) {
+            setPrepend(newOption)
+
+            let savedState = JSON.parse(localStorage.getItem('state'))
+            savedState.prepend = newOption
+            localStorage.setItem('state', JSON.stringify(savedState))
+        }
+    }
+
+    const handleLogIn = (user: string) => {
+        setUser(user)
+        setMenu(false)
+
+        let savedState = JSON.parse(localStorage.getItem('state'))
+        savedState.user = user
+        localStorage.setItem('state', JSON.stringify(savedState))
+    }
+
+    const handleLogOut = () => {
+        setPrepend(false)
+        setTab('submit')
+        setUser(null)
+
+        let savedState = JSON.parse(localStorage.getItem('state'))
+        savedState.prepend = false
+        savedState.user = null
+        localStorage.setItem('state', JSON.stringify(savedState))
+        sessionStorage.setItem('state', JSON.stringify({ tab: 'submit' }))
+    }
+
+    const handleTabChange = (_: React.MouseEvent<HTMLElement>, newTab: string | null) => {
+        if ((newTab === 'submit' || newTab === 'data') && newTab !== null ) {
+            setTab(newTab)
+            sessionStorage.setItem('state', JSON.stringify({ tab: newTab }))
+        }
+    }
+
+    const handleToggleMenu = () => {
+        menu ? setMenu(false) : setMenu(true)
+    }
+
+    useEffect(() => {
+        const savedState = JSON.parse(localStorage.getItem('state'))
+        setLength(savedState.length)
+        setPrepend(savedState.prepend)
+        setUser(savedState.user)
+        if (sessionStorage.getItem('state')) {
+            setTab(JSON.parse(sessionStorage.getItem('state')).tab)
+        } else {
+            sessionStorage.setItem('state', JSON.stringify({
+                tab: 'submit'
+            }))
+        }
+    }, [])
+
     return (
         <>
-            <Head>
-                <title>Short</title>
-                <meta name="description" content="URL shortener" />
-                <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width" />
-                <link rel="icon" href="/favicon.ico" />
-                <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📎</text></svg>"></link>
-            </Head>
-            
-            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Header />
+            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <Header toggleDrawer={handleToggleMenu} toggleTheme={props.toggleTheme} theme={props.theme} />
                 
                 <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Container maxWidth="md" sx={{ textAlign: 'center', py: 4 }}>
-                        <Typography variant="h1" component="h1" sx={{ fontSize: {xs: '72px', sm: 'h1.fontSize'} ,fontWeight: 'bold', py: 0 }}>
-                            Short
-                        </Typography>
+                    <Container maxWidth='md' sx={{ textAlign: 'center' }}>
+                        <Box sx={{ my: 4, userSelect: 'none' }}>
+                            <Typography variant='h1' component='h1' sx={{ fontSize: {xs: '16vw', sm: 'h1.fontSize'}, fontWeight: 800 }}>
+                                Short
+                            </Typography>
+                            <Typography>
+                                A simple URL shortener.
+                            </Typography>
+                        </Box>
 
-                        <IconButton onClick={props.toggleTheme as any} sx={{ color: 'text.secondary', mt: 1, mb: 3 }}>
-                            <Brightness4 />
-                        </IconButton>
-
-                        <Form />
+                        <Form
+                            handleTabChange={handleTabChange}
+                            length={length}
+                            prepend={prepend}
+                            tab={tab}
+                            theme={props.theme}
+                            user={user}
+                        />
                     </Container>                    
                 </Box>
 
                 <Footer />
             </Box>
+
+            <LogInMenu
+                handleCloseLogIn={() => setLogin(false)}
+                login={login}
+                handleLogIn={handleLogIn}
+            />
+            
+            <Menu
+                menu={menu}
+                handleChangeTheme={handleChangeTheme}
+                handleChangeLength={handleChangeLength}
+                handleChangePrepend={handleChangePrepend}
+                handleLogOut={handleLogOut}
+                handleShowLogIn={() => setLogin(true)} 
+                handleToggleMenu={handleToggleMenu}
+                length={length}
+                theme={props.theme}
+                prepend={prepend}
+                user={user}
+            />
         </>
     )
 }
