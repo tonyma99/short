@@ -31,6 +31,7 @@ let recentRows: { full: string, short: string }[] = []
 export default function Form(props: { length: number, theme: string, prepend: boolean, tab: string, user: string, handleTabChange: (_: React.MouseEvent<HTMLElement>, newTab: string) => void }) {
     const [copied, setCopied] = useState('')
     const [error, setError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const [hidden, setHidden] = useState(true)
     const [input, setInput] = useState('')
     const [loaded, setLoaded] = useState(false)
@@ -47,6 +48,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
 
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
+        setErrorMessage('')
         if (pattern.test(value)) {
             setError(false)
         } else {
@@ -57,12 +59,15 @@ export default function Form(props: { length: number, theme: string, prepend: bo
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        inputRef.current.blur()
         
         if (!pattern.test(input)) {
             setError(true)
+            setErrorMessage('Invalid URL.')
             return
         }
 
+        setInput('')
         setLoading(true)
 
         const response = await fetch('/api/shorten', {
@@ -87,15 +92,19 @@ export default function Form(props: { length: number, theme: string, prepend: bo
             let savedState = JSON.parse(localStorage.getItem('state'))
             savedState.data = recentRows
             localStorage.setItem('state', JSON.stringify(savedState))
+            setHidden(false)
         } else {
             setError(true)
+            if (response.status === 400) {
+                setErrorMessage('Invalid URL.')
+            } else if (response.status === 500) {
+                setErrorMessage('The application has encountered an internal server error.')
+            } else {
+                setErrorMessage('The application has encountered an unknown error.')
+            }
         }
 
-        loadData()
-        
-        setHidden(false)
-        setInput('')
-        inputRef.current.blur()
+        await loadData()
         setLoading(false)
     }
 
@@ -110,7 +119,6 @@ export default function Form(props: { length: number, theme: string, prepend: bo
             }
 
             setLoaded(true)
-            inputRef.current.blur()
         }
     }, [props.user])
 
@@ -148,6 +156,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
                     <TextField
                         autoComplete='off'
                         error={error}
+                        helperText={errorMessage}
                         inputProps={{
                             autoCapitalize: 'off',
                             autoCorrect: 'off',
@@ -164,7 +173,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
                         disabled={error}
                         loading={loading}
                         loadingIndicator={<CircularProgress color='inherit' size={24} thickness={6} />}
-                        sx={{ ml: 1 }}
+                        sx={{ height: 56, ml: 1 }}
                         type='submit'
                         variant='contained'
                     >

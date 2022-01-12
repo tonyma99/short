@@ -1,6 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
-import LoadingButton from '@mui/lab/LoadingButton'
-import CircularProgress from '@mui/material/CircularProgress'
+import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -15,14 +14,13 @@ export default function LogInMenu(props: {
     login: boolean
 }) {
     const [error, setError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const [input, setInput] = useState('')
-    const [loading, setLoading] = useState(false)
     
     const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
         const userID = event.target.value
-        if (userID.length < 16) {
-            setErrorMessage(false)
+        if (userID.length <= 16) {
+            setErrorMessage('')
             setInput(userID)
         }
         (userID.length > 3) ? setError(false) : setError(true)
@@ -30,42 +28,36 @@ export default function LogInMenu(props: {
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        inputRef.current.blur()
 
-        if (input.length <= 0 || input.length > 16) {
+        if (!(input.length >= 4 && input.length <= 16)) {
             setInput('')
             setError(true)
+            setErrorMessage('User ID must be between 4 and 16 characters in length.')
             return
         }
 
         if (!input.match('^[a-zA-Z0-9]*$')) {
             setInput('')
             setError(true)
-            setErrorMessage(true)
+            setErrorMessage('User ID must only contain letters and numbers.')
             return
         }
 
-        inputRef.current.blur()
-        const userID = input
-
         setInput('')
-        setError(false)
-        setErrorMessage(false)
-        setLoading(true)
-
-        if (userID.length > 3 && userID.length < 16 && userID.length != 0) {
-            props.handleLogIn(userID)
-        } else {
-            setError(true)
-        }
-        
-        setLoading(false)
+        props.handleLogIn(input)
         props.handleCloseLogIn()
     }
     
     return (
         <Dialog
             open={props.login}
-            onClose={props.handleCloseLogIn}
+            onClose={() => {
+                setError(false)
+                setErrorMessage('')
+                setInput('')
+                props.handleCloseLogIn()
+            }}
             PaperProps={{ elevation: 1 }}
             sx={{
                 '& .MuiDialog-paper': {
@@ -87,7 +79,7 @@ export default function LogInMenu(props: {
                         autoComplete='off'
                         error={error}
                         fullWidth
-                        helperText={errorMessage ? 'Only letters and numbers are allowed': null}
+                        helperText={errorMessage}
                         inputProps={{
                             autoCapitalize: 'off',
                             autoCorrect: 'off',
@@ -106,16 +98,14 @@ export default function LogInMenu(props: {
                         value={input}
                         variant='outlined'
                     />
-                    <LoadingButton 
+                    <Button 
                         disabled={error}
                         type='submit'
                         variant='contained'
                         fullWidth
-                        loading={loading}
-                        loadingIndicator={<CircularProgress color='inherit' size={24} thickness={6} />}
                         sx={{ display: 'block', fontSize: 16, height: 56 }}>
                         Login
-                    </LoadingButton>
+                    </Button>
                 </form>
             </DialogContent>
         </Dialog>
