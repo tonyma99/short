@@ -9,9 +9,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const result = await db.collection(process.env.MONGODB_COLLECTION).findOne({ shortUrl: req.query.id })
             
             if (result) {
+                const ip = req.query.ip ? req.query.ip : req.headers['x-real-ip']
                 await db.collection(process.env.MONGODB_COLLECTION).updateOne(
                     { shortUrl: req.query.id },
-                    { $inc: { count: 1 }, $push: { visits: req.query.ip ? req.query.ip : null } }
+                    { $inc: { count: 1 }, $push: { visits: ip ? ip : null } }
                 )
 
                 return res.status(200).json({ url: result.fullUrl })
