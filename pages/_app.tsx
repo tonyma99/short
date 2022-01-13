@@ -1,11 +1,12 @@
 import '../styles/globals.css'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
+import { SessionProvider } from 'next-auth/react'
 import { useState, useMemo, useEffect } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     const [mode, setMode] = useState<'light' | 'dark'>('dark')
     const [load, setLoad] = useState(false)
 
@@ -121,7 +122,7 @@ export default function App({ Component, pageProps }: AppProps) {
     }, [])
 
     return (
-        <>
+        <SessionProvider session={session}>
             <Head>
                 <title>Short</title>
                 <meta name="description" content="URL shortener" />
@@ -133,6 +134,6 @@ export default function App({ Component, pageProps }: AppProps) {
                 <CssBaseline />
                 { load ? <Component {...pageProps} toggleTheme={toggleTheme} theme={mode} /> : null }           
             </ThemeProvider>
-        </>
+        </SessionProvider>
     )
 }

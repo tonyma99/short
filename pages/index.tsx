@@ -1,20 +1,24 @@
-import { useCallback, useEffect, useState, MouseEventHandler } from 'react'
+import { useEffect, useState, MouseEventHandler } from 'react'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
-import Menu from '../components/Menu'
 import Footer from '../components/Footer'
 import Form from '../components/Form'
-import LogInMenu from '../components/LogInMenu'
 import Header from '../components/Header'
+import LogInMenu from '../components/LogInMenu'
+import Menu from '../components/Menu'
+import SignUpMenu from '../components/SignUpMenu'
 
 export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorElement>, theme:string }) {
     const [length, setLength] = useState(8)
+    const [login, setLogin] = useState(false)
     const [menu, setMenu] = useState(false)
     const [prepend, setPrepend] = useState(false)
-    const [login, setLogin] = useState(false)
+    const [signup, setSignup] = useState(false)
     const [tab, setTab] = useState<'submit' | 'data'>('submit')
-    const [user, setUser] = useState<string|null>(null)
+
+    const { data: session } = useSession()
 
     const handleChangeTheme = (event: any, newOption: string | null) => {
         if (newOption != null) props.toggleTheme(event)
@@ -40,25 +44,42 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
         }
     }
 
-    const handleLogIn = (user: string) => {
-        setUser(user)
-        setMenu(false)
-
-        let savedState = JSON.parse(localStorage.getItem('state'))
-        savedState.user = user
-        localStorage.setItem('state', JSON.stringify(savedState))
+    const handleLogIn = async (username: string, password: string) => {
+        if ((await signIn('credentials', { redirect: false, username, password })).ok) {
+            setLogin(false)
+            return true
+        }
+        return false
     }
 
     const handleLogOut = () => {
-        setPrepend(false)
-        setTab('submit')
-        setUser(null)
-
         let savedState = JSON.parse(localStorage.getItem('state'))
         savedState.prepend = false
         savedState.user = null
         localStorage.setItem('state', JSON.stringify(savedState))
         sessionStorage.setItem('state', JSON.stringify({ tab: 'submit' }))
+        signOut()
+    }
+
+    const handleSignUp = async (username: string, password: string) => {
+        const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        })
+
+        if (response.status === 200) {
+            setSignup(false)
+            handleLogIn(username, password)
+            return true
+        }
+
+        return false
     }
 
     const handleTabChange = (_: React.MouseEvent<HTMLElement>, newTab: string | null) => {
@@ -76,7 +97,6 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
         const savedState = JSON.parse(localStorage.getItem('state'))
         setLength(savedState.length)
         setPrepend(savedState.prepend)
-        setUser(savedState.user)
         if (sessionStorage.getItem('state')) {
             setTab(JSON.parse(sessionStorage.getItem('state')).tab)
         } else {
@@ -108,7 +128,7 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
                             prepend={prepend}
                             tab={tab}
                             theme={props.theme}
-                            user={user}
+                            session={session}
                         />
                     </Container>                    
                 </Box>
@@ -121,6 +141,12 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
                 login={login}
                 handleLogIn={handleLogIn}
             />
+
+            <SignUpMenu
+                handleCloseSignUp={() => setSignup(false)}
+                signup={signup}
+                handleSignUp={handleSignUp}
+            />
             
             <Menu
                 menu={menu}
@@ -128,12 +154,13 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
                 handleChangeLength={handleChangeLength}
                 handleChangePrepend={handleChangePrepend}
                 handleLogOut={handleLogOut}
-                handleShowLogIn={() => setLogin(true)} 
+                handleShowLogIn={() => setLogin(true)}
+                handleShowSignup={() => setSignup(true)}
                 handleToggleMenu={handleToggleMenu}
                 length={length}
                 theme={props.theme}
                 prepend={prepend}
-                user={user}
+                session={session}
             />
         </>
     )

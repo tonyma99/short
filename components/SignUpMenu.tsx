@@ -7,10 +7,10 @@ import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
-export default function LogInMenu(props: {
-    handleCloseLogIn: () => void,
-    handleLogIn: (user: string, password: string) => Promise<boolean>,
-    login: boolean
+export default function SignUpMenu(props: {
+    handleCloseSignUp: () => void,
+    handleSignUp: (user: string, password: string) => Promise<boolean>,
+    signup: boolean
 }) {
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -19,44 +19,60 @@ export default function LogInMenu(props: {
     const [userInput, setUserInput] = useState('')
 
     const handlePasswordInput = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value.length <= 64) {
+        const password = event.target.value
+        if (password.length <= 64) {
             setError(false)
             setErrorMessage('')
-            setPasswordInput(event.target.value)
+            setPasswordInput(password)
         }
     }
     
     const handleUserInput = (event: ChangeEvent<HTMLInputElement>) => {
-        if (event.target.value.length <= 16) {
+        const username = event.target.value
+        if (username.length <= 16) {
             setError(false)
             setErrorMessage('')
-            setUserInput(event.target.value)
+            setUserInput(username)
         }
     }
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
+        if (!userInput.match('^[a-zA-Z0-9]*$')) {
+            setError(true)
+            setErrorMessage('User ID must only contain letters and numbers.')
+            return
+        } else if (!(userInput.length >= 4 && userInput.length <= 16)) {
+            setError(true)
+            setErrorMessage('User ID must be between 4 and 16 characters in length.')
+            return
+        } else if (!(passwordInput.length >= 8 && passwordInput.length <= 64)) {
+            setError(true)
+            setErrorMessage('Password must be between 8 and 64 characters in length.')
+            return
+        }  
+
         setLoading(true)
         setUserInput('')
         setPasswordInput('')
 
-        if (!(await props.handleLogIn(userInput, passwordInput))) {
+        if (!(await props.handleSignUp(userInput, passwordInput))) {
             setError(true)
-            setErrorMessage('Incorrect username or password.')
+            setErrorMessage('User already exists.')
         }
-        
+
         setLoading(false)
     }
     
     return (
         <Dialog
-            open={props.login}
+            open={props.signup}
             onClose={() => {
                 setError(false)
                 setErrorMessage('')
                 setUserInput('')
-                props.handleCloseLogIn()
+                props.handleCloseSignUp()
             }}
             PaperProps={{ elevation: 1 }}
             sx={{
@@ -71,7 +87,7 @@ export default function LogInMenu(props: {
             }}
         >
             <DialogTitle sx={{ textAlign: 'center', p: 3, pb: 2 }}>
-                <Typography sx={{ fontSize: 18, fontWeight: 'bold' }}>Log In</Typography>
+                <Typography sx={{ fontSize: 18, fontWeight: 'bold' }}>Sign Up</Typography>
             </DialogTitle>
             <DialogContent sx={{ p: 3 }}>
                 <form onSubmit={handleSubmit}>
@@ -127,9 +143,9 @@ export default function LogInMenu(props: {
                         loadingIndicator={<CircularProgress color='inherit' size={28} thickness={6} />}
                         sx={{ display: 'block', fontSize: 16, height: 56 }}
                         type='submit'
-                        variant='contained'   
+                        variant='contained'
                     >
-                        Log In
+                        Sign Up
                     </LoadingButton>
                 </form>
             </DialogContent>

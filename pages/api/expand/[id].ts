@@ -6,11 +6,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const client = await clientPromise
             const db = client.db(process.env.MONGODB_DB)
-            const result = await db.collection(process.env.MONGODB_COLLECTION).findOne({ shortUrl: req.query.id })
+            const result = await db.collection(process.env.MONGODB_LINKS).findOne({ shortUrl: req.query.id })
             
             if (result) {
                 const ip = req.query.ip ? req.query.ip : req.headers['x-real-ip']
-                await db.collection(process.env.MONGODB_COLLECTION).updateOne(
+                await db.collection(process.env.MONGODB_LINKS).updateOne(
                     { shortUrl: req.query.id },
                     { $inc: { count: 1 }, $push: { visits: ip ? ip : null } }
                 )

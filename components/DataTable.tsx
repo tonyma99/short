@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Session } from 'next-auth'
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded'
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded'
 import KeyboardDoubleArrowLeftRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftRounded'
@@ -75,7 +76,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     )
 }
 
-export default function DataTable(props: { rows: { fullUrl: string, shortUrl: string, date: string, count: number }[], user: string }) {
+export default function DataTable(props: { rows: { fullUrl: string, shortUrl: string, created: string, count: number }[], session: Session }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
@@ -91,10 +92,10 @@ export default function DataTable(props: { rows: { fullUrl: string, shortUrl: st
     }
 
     useEffect(() => {
-        if (!props.user) {
+        if (!props.session) {
             setPage(0)
         }
-    }, [props.user])
+    }, [props.session])
 
     return (
         <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
@@ -115,7 +116,7 @@ export default function DataTable(props: { rows: { fullUrl: string, shortUrl: st
                         <TableRow hover key={props.rows.indexOf(row)}>
                             <TableCell scope='row' sx={{ whiteSpace: 'nowrap' }}><Link href={row.fullUrl}>{row.fullUrl}</Link></TableCell>
                             <TableCell scope='row' sx={{ whiteSpace: 'nowrap' }}><Link href={row.shortUrl}>{row.shortUrl}</Link></TableCell>
-                            <TableCell scope='row' sx={{ whiteSpace: 'nowrap' }}>{row.date}</TableCell>
+                            <TableCell scope='row' sx={{ whiteSpace: 'nowrap' }}>{row.created}</TableCell>
                             <TableCell align='right' scope='row' sx={{ whiteSpace: 'nowrap', width: 0 }}>{row.count}</TableCell>
                         </TableRow>
                     ))}

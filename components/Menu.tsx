@@ -1,9 +1,11 @@
+import { Session } from 'next-auth'
 import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded'
+import LoginRoundedIcon from '@mui/icons-material/LoginRounded'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import { alpha } from '@mui/material'
 import Drawer from '@mui/material/Drawer'
@@ -20,12 +22,13 @@ export default function Menu(props: {
     handleChangeTheme: (event: any, newOption: string | null) => void,
     handleLogOut: () => void,
     handleShowLogIn: () => void,
+    handleShowSignup: () => void,
     handleToggleMenu: () => void,
     length: number,
     menu: boolean,
-    theme: string,
     prepend: boolean,
-    user: string
+    session: Session,
+    theme: string
 }) {
     return (
         <Drawer
@@ -49,8 +52,8 @@ export default function Menu(props: {
                 </ListItem>
             </List>
             <List sx={{ '& .MuiTypography-root': { fontSize: '1em', fontWeight: 'bold' }, '& .IconToggleButton > .MuiTypography-root': { ml: 1 }, mb: 'auto' }}>
-                <ListItem sx={{ flexGrow: 1, py: 1.5 }}>
-                    {props.user ?
+                {props.session ?
+                <ListItem sx={{ }}>
                     <ToggleButton onChange={props.handleLogOut} value={0} className='IconToggleButton'
                         sx={{
                             '&:hover': { backgroundColor: (theme) => alpha(theme.palette.error.main, 0.2) },
@@ -60,15 +63,25 @@ export default function Menu(props: {
                         }}
                     >
                         <LogoutRoundedIcon />
-                        <Typography>Log Out ({props.user})</Typography>
+                        <Typography>{props.session.user.username}</Typography>
                     </ToggleButton>
-                    :
+                </ListItem>
+                :
+                <>
+                <ListItem sx={{  }}>
                     <ToggleButton onChange={props.handleShowLogIn} value={0} className='IconToggleButton' sx={{ color: 'text.primary' }}>
-                        <AssignmentIndRoundedIcon />
+                        <LoginRoundedIcon />
                         <Typography>Log In</Typography>
                     </ToggleButton>
-                    }
                 </ListItem>
+                <ListItem sx={{  }}>
+                    <ToggleButton onChange={props.handleShowSignup} value={0} className='IconToggleButton' sx={{ color: 'text.primary' }}>
+                        <AssignmentIndRoundedIcon />
+                        <Typography>Sign Up</Typography>
+                    </ToggleButton>
+                </ListItem>
+                </>
+                }
                     
                 <ListItem sx={{ pb: 0 }}>
                     <Typography>Theme</Typography>
@@ -94,7 +107,7 @@ export default function Menu(props: {
                 </ListItem>
                 <ListItem>
                     <ToggleButtonGroup value={props.prepend} exclusive onChange={(_, newOption) => props.handleChangePrepend(newOption)}>
-                        <ToggleButton disabled={!props.user} value={true}>
+                        <ToggleButton disabled={!props.session} value={true}>
                             <Typography>
                                 Enabled
                             </Typography>

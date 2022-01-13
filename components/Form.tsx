@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
+import { Session } from 'next-auth'
 import DataTable from './DataTable'
 import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
@@ -23,12 +24,10 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 
-const inputRef = React.createRef<HTMLInputElement>()
-
-let dataRows: { fullUrl: string, shortUrl: string, date: string, count: number }[] = []
+let dataRows: { fullUrl: string, shortUrl: string, created: string, count: number }[] = []
 let recentRows: { full: string, short: string }[] = []
 
-export default function Form(props: { length: number, theme: string, prepend: boolean, tab: string, user: string, handleTabChange: (_: React.MouseEvent<HTMLElement>, newTab: string) => void }) {
+export default function Form(props: { length: number, prepend: boolean, session: Session, tab: string, theme: string, handleTabChange: (_: React.MouseEvent<HTMLElement>, newTab: string) => void }) {
     const [copied, setCopied] = useState('')
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -58,7 +57,6 @@ export default function Form(props: { length: number, theme: string, prepend: bo
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        inputRef.current.blur()
 
         setInput('')
         setLoading(true)
@@ -70,7 +68,6 @@ export default function Form(props: { length: number, theme: string, prepend: bo
             },
             body: JSON.stringify({
                 url: input,
-                user: props.user ? props.user : null,
                 prepend: props.prepend,
                 length: props.length
             })
@@ -102,10 +99,8 @@ export default function Form(props: { length: number, theme: string, prepend: bo
     }
 
     const loadData = useCallback(async () => {
-        const user = props.user
-
-        if (user) {
-            const response = await fetch('/api/links/' + user)
+        if (props.session) {
+            const response = await fetch('/api/links/')
 
             if (response.status === 200) {
                 dataRows = (await response.json()).data.reverse()
@@ -113,7 +108,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
 
             setLoaded(true)
         }
-    }, [props.user])
+    }, [props.session])
 
     useEffect(() => {
         const savedState = JSON.parse(localStorage.getItem('state'))
@@ -126,7 +121,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
     
     return (
         <Box sx={{ my: 4 }}>
-            {props.user ?
+            {props.session ?
                 <ToggleButtonGroup
                     exclusive
                     value={props.tab}
@@ -148,6 +143,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
                 <Container disableGutters sx={{ display: 'flex' }}>
                     <TextField
                         autoComplete='off'
+                        disabled={loading}
                         error={error}
                         helperText={errorMessage}
                         inputProps={{
@@ -155,12 +151,11 @@ export default function Form(props: { length: number, theme: string, prepend: bo
                             autoCorrect: 'off',
                             spellCheck: 'false'
                         }}
-                        inputRef={inputRef}
                         label='URL'
                         onInput={handleInput}
+                        sx={{ flex: 1 }}
                         type='url'
                         value={input}
-                        sx={{ flex: 1 }}
                     />
                     <LoadingButton
                         disabled={error}
@@ -211,7 +206,7 @@ export default function Form(props: { length: number, theme: string, prepend: bo
                 {loaded ?
                 <Box>
                     <Box hidden={!(dataRows.length > 0)}>
-                        <DataTable rows={dataRows} user={props.user} />
+                        <DataTable rows={dataRows} session={props.session} />
                     </Box>
                     
                     <Box hidden={!(dataRows.length === 0)}>

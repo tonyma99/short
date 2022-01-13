@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import { nanoid } from 'nanoid'
 import clientPromise from '../../lib/mongodb'
 
@@ -13,63 +14,43 @@ async function checkDomain(url: string) {
             return 'http://' + url
         }
     } catch (_) {}
-    
+
     return ''
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
         const fullUrl = await checkDomain(req.body.url)
-        if (!fullUrl || (req.body.user && (!req.body.user.match('^[a-zA-Z0-9]*$') || req.body.user.length < 4 || req.body.user.length > 16))) {
-            return res.status(400).json({
-                error: {
-                    code: 400,
-                    message: 'Bad Request'
-                }
-            })
+        if (!fullUrl) {
+            return res.status(400).end()
         }
 
         try {
-            const client = await clientPromise
-            const db = client.db(process.env.MONGODB_DB)
+            const session = await getSession({ req })
+
+            const links = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_LINKS)
 
             const length = req.body.length && req.body.length <= 20 ? req.body.length : 8
-            const shortUrl = req.body.user && req.body.prepend ? req.body.user + '-' + nanoid(length) : nanoid(length)
+            const shortUrl = session && req.body.prepend ? session.user.username + '-' + nanoid(length) : nanoid(length)
 
-            const userIp = req.headers['x-real-ip'] ? req.headers['x-real-ip'] : null
-            // The following only works if the app is deployed on Vercel
-            const userCountry = req.headers['x-vercel-ip-country'] ? req.headers['x-vercel-ip-country'] : null
-            const userRegion = req.headers['x-vercel-ip-country-region'] ? req.headers['x-vercel-ip-country-region'] : null
-            const userCity = req.headers['x-vercel-ip-city'] ? req.headers['x-vercel-ip-city'] : null
-            
-            db.collection(process.env.MONGODB_COLLECTION).insertOne({
+            links.insertOne({
                 fullUrl,
                 shortUrl,
                 count: 0,
                 visits: [],
-                timestamp: new Date(),
-                user: req.body.user,
-                userIp,
-                userCountry,
-                userRegion,
-                userCity
+                created: new Date(),
+                user: session ? session.user.username : null,
+                userIp: req.headers['x-real-ip'] ? req.headers['x-real-ip'] : null,
+                userCountry: req.headers['x-vercel-ip-country'] ? req.headers['x-vercel-ip-country'] : null,
+                userRegion: req.headers['x-vercel-ip-country-region'] ? req.headers['x-vercel-ip-country-region'] : null,
+                userCity: req.headers['x-vercel-ip-city'] ? req.headers['x-vercel-ip-city'] : null
             })
 
             return res.status(200).json({ shortUrl: 'http://' + req.headers.host + '/' + shortUrl })
         } catch (_) {
-            return res.status(500).json({
-                error: {
-                    status: 500,
-                    message: 'Internal Server Error'
-                }
-            })
+            return res.status(500).end()
         }
     } else {
-        return res.status(405).json({
-            error: {
-                error: 405,
-                message: 'Method Not Allowed'
-            }
-        })
+        return res.status(405).end()
     }
 }
