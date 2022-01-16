@@ -10,15 +10,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         try {
             const users = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_USERS)
+            const userLowerCase = req.body.username.toLowerCase()
 
-            if (await users.findOne({ username: req.body.username })) {
+            if (await users.findOne({ username: userLowerCase })) {
                 return res.status(400).end()
             }
             
             const bcrypt = require('bcrypt')
 
             users.insertOne({
-                username: req.body.username.toLowerCase(),
+                username: userLowerCase,
                 password: await bcrypt.hash(req.body.password, 10),
                 created: new Date(),
                 lastLogin: null,

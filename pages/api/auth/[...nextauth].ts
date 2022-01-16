@@ -13,7 +13,7 @@ export default NextAuth({
             authorize: async (credentials) => {
                 try {
                     const users = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_USERS)
-                    const user = await users.findOne({ username: credentials.username  })
+                    const user = await users.findOne({ username: credentials.username.toLowerCase() })
                     if (user) {
                         const bcrypt = require('bcrypt')
                         const match = await bcrypt.compare(credentials.password, user.password)
