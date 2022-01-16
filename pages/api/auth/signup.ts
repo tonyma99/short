@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const bcrypt = require('bcrypt')
 
             users.insertOne({
-                username: req.body.username,
+                username: req.body.username.toLowerCase(),
                 password: await bcrypt.hash(req.body.password, 10),
                 created: new Date(),
                 lastLogin: null,
