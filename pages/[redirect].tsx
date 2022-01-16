@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
 
-export default function Redirect(props: { host: string, protocol: string, ip: string, redirect: string }) {
-    const [load, setLoad] = useState(false)
-    const [url, setUrl] = useState('')
+export default function Redirect(props: { host: string, protocol: string, ip: string, redirect: string }): null {
     const router = useRouter()
 
     useEffect(() => {
@@ -16,8 +11,6 @@ export default function Redirect(props: { host: string, protocol: string, ip: st
         
             if (response.status === 200) {
                 const url = (await response.json()).url
-                setUrl(url)
-                setLoad(true)
                 router.push(url)
             } else {
                 router.push('/')
@@ -26,16 +19,7 @@ export default function Redirect(props: { host: string, protocol: string, ip: st
         redirect()
     }, [props, router])
 
-    return (
-        load &&
-        <Box sx={{ alignItems: 'center', display: 'flex', height: '100%'}}>
-            <Container sx={{ textAlign: 'center' }}>
-                <Typography sx={{ fontWeight: 'bold' }}>
-                    Redirecting to {url}...
-                </Typography>
-            </Container>
-        </Box>
-    )
+    return null
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
