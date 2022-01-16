@@ -18,6 +18,10 @@ import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
+import QrCodeRoundedIcon from '@mui/icons-material/QrCodeRounded'
+import QRCodeModal from './QRCodeModal'
 
 interface TablePaginationActionsProps {
     count: number
@@ -83,10 +87,19 @@ export default function HistoryEntries(props: {
     loaded: boolean,
     session: Session
 }) {
+    const [copied, setCopied] = useState('')
+    const [qrCode, setQrCode] = useState('')
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - props.history.length) : 0
+
+    const handleCopyButtonClicked = async (url: string) => {
+        setCopied(url)
+        navigator.clipboard.writeText(url)
+        await new Promise(resolve => setTimeout(resolve, 1500))
+        setCopied('')
+    }
 
     const handleChangePage = (_: React.MouseEvent<HTMLElement>, newPage: number) => {
         setPage(newPage)
@@ -95,6 +108,12 @@ export default function HistoryEntries(props: {
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setRowsPerPage(parseInt(event.target.value, 10))
         setPage(0)
+    }
+
+    const handleGenerateQr = (url: string) => {
+        const QRCode = require('qrcode')
+
+        QRCode.toDataURL(url).then((qr: string) => { setQrCode(qr) })
     }
 
     return (
@@ -107,6 +126,8 @@ export default function HistoryEntries(props: {
                             <Table sx={{ minWidth: 500 }}>
                                 <TableHead>
                                     <TableRow sx={{ '& td, & th': { fontWeight: 'bold' } }}>
+                                        <TableCell />
+                                        <TableCell />
                                         <TableCell sx={{ whiteSpace: 'nowrap' }}>Full URL</TableCell>
                                         <TableCell sx={{ whiteSpace: 'nowrap' }}>Short URL</TableCell>
                                         <TableCell sx={{ whiteSpace: 'nowrap' }}>Creation Date</TableCell>
@@ -119,6 +140,20 @@ export default function HistoryEntries(props: {
                                         : props.history
                                     ).map((row, idx) => (
                                         <TableRow hover key={idx}>
+                                            <TableCell scope='row' sx={{ whiteSpace: 'nowrap', pl: 1, pr: 0, py: 0, width: 0 }}>
+                                                <IconButton onClick={() => handleCopyButtonClicked(row.shortUrl)} sx={{ bgcolor: 'rgba(0,0,0,0)', border: 'none' }}>
+                                                    {copied === row.shortUrl ?
+                                                    <CheckRoundedIcon color='success' />
+                                                    :
+                                                    <ContentPasteRoundedIcon />
+                                                    }
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell scope='row' sx={{ whiteSpace: 'nowrap', pl: 0, pr: 1, py: 0, width: 0 }}>
+                                                <IconButton onClick={() => handleGenerateQr(row.shortUrl)} sx={{ bgcolor: 'rgba(0,0,0,0)', border: 'none' }}>
+                                                    <QrCodeRoundedIcon />
+                                                </IconButton>
+                                            </TableCell>
                                             <TableCell scope='row' sx={{ whiteSpace: 'nowrap' }}>
                                                 <Link href={row.fullUrl}>{row.fullUrl}</Link>
                                             </TableCell>
@@ -146,7 +181,7 @@ export default function HistoryEntries(props: {
                                             ActionsComponent={TablePaginationActions}
                                             onPageChange={handleChangePage}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
-                                            colSpan={4}
+                                            colSpan={6}
                                             count={props.history.length}
                                             page={page}
                                             rowsPerPage={rowsPerPage}
@@ -172,13 +207,15 @@ export default function HistoryEntries(props: {
                             No links found.
                         </Typography>
                     </Box>
-                    }
-                </Box>
-                :
-                <Box sx={{ py: '13px' }}>
-                    <CircularProgress color='inherit' size={24} thickness={6} />
-                </Box>
-            }
+                }
+            </Box>
+        :
+            <Box sx={{ py: '13px' }}>
+                <CircularProgress color='inherit' size={24} thickness={6} />
+            </Box>
+        }
+
+        {qrCode && <QRCodeModal handleCloseModal={() => setQrCode('')} qr={qrCode} />}
         </>
     )
 }

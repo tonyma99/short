@@ -9,6 +9,7 @@ A simple URL shortener web application built with the intention of learning Reac
 ## Dependencies
 
 - [`bcrypt`](https://github.com/kelektiv/node.bcrypt.js) – Hash, salt and validate plain-text passwords
+- [`qrcode`](https://github.com/soldair/node-qrcode) – Generate QR codes for short URLs
 - [`mongodb`](https://github.com/mongodb/node-mongodb-native) – Used to connect to the MongoDB database
 - [`mui`](https://github.com/mui-org/material-ui) – The component library used to build the front-end of the application
 - [`nanoid`](https://github.com/ai/nanoid) – Generate the short URL codes

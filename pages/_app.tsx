@@ -1,6 +1,5 @@
 import '../styles/globals.css'
 import { AppProps } from 'next/app'
-import Head from 'next/head'
 import { SessionProvider } from 'next-auth/react'
 import { useState, useMemo, useEffect } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -60,23 +59,11 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     }, [mode])
 
     return (
-        <>
-            <Head>
-                <title>Short</title>
-                <meta name="description" content="URL shortener" />
-                <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width" />
-                <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📎</text></svg>" />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" />
-                <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet" key="font" />
-            </Head>
-
-            <SessionProvider session={session}>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <Component {...pageProps} toggleTheme={toggleTheme} theme={mode} />
-                </ThemeProvider>
-            </SessionProvider>
-        </>
+        <SessionProvider session={session}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Component {...pageProps} toggleTheme={toggleTheme} theme={mode} />
+            </ThemeProvider>
+        </SessionProvider>
     )
 }

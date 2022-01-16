@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState, MouseEventHandler } from 'react'
+import Head from 'next/head'
 import { useSession } from 'next-auth/react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -93,6 +94,13 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
 
     return (
         <Layout handleChangeLength={handleChangeLength} handleChangePrepend={handleChangePrepend} handleChangeTheme={handleChangeTheme} length={length} prepend={prepend} session={session} theme={props.theme}>
+            <Head>
+                <title>Short</title>
+                <meta name="description" content="URL shortener" />
+                <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width" />
+                <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📎</text></svg>" />
+            </Head>
+            
             <Box sx={{ my: 4, userSelect: 'none' }}>
                 <Typography variant='h1' component='h1' sx={{ fontSize: {xs: '16vw', sm: 'h1.fontSize'}, fontWeight: 800 }}>
                     Short
