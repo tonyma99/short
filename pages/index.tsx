@@ -1,26 +1,32 @@
-import { useEffect, useState, MouseEventHandler } from 'react'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { useCallback, useEffect, useState, MouseEventHandler } from 'react'
+import { useSession } from 'next-auth/react'
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
-import Footer from '../components/Footer'
 import Form from '../components/Form'
-import Header from '../components/Header'
-import LogInMenu from '../components/LogInMenu'
-import Menu from '../components/Menu'
-import SignUpMenu from '../components/SignUpMenu'
+import HistoryEntries from '../components/HistoryEntries'
+import Layout from '../components/Layout'
+import RecentEntries from '../components/RecentEntries'
+import TabToggle from '../components/TabToggle'
 
 export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorElement>, theme:string }) {
+    const [loaded, setLoaded] = useState(false)
     const [length, setLength] = useState(8)
-    const [login, setLogin] = useState(false)
-    const [menu, setMenu] = useState(false)
     const [prepend, setPrepend] = useState(false)
-    const [signup, setSignup] = useState(false)
-    const [tab, setTab] = useState<'submit' | 'data'>('submit')
+    const [tab, setTab] = useState<'submit' | 'history'>('submit')
+
+    const [history, setHistory] = useState([])
+    const [recent, setRecent] = useState([])
 
     const { data: session } = useSession()
 
-    const handleChangeTheme = (event: any, newOption: string | null) => {
+    const addRecent = (entry: RecentEntryJSON) => {
+        let savedState = JSON.parse(sessionStorage.getItem('state'))
+        savedState.recent.push(entry)
+        setRecent(savedState.recent)
+        sessionStorage.setItem('state', JSON.stringify(savedState))
+    }
+
+    const handleChangeTheme = (event: any, newOption: string) => {
         if (newOption != null) props.toggleTheme(event)
     }
 
@@ -28,9 +34,9 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
         if (newOption != null) {
             setLength(newOption)
 
-            let savedState = JSON.parse(localStorage.getItem('state'))
+            let savedState = JSON.parse(sessionStorage.getItem('state'))
             savedState.length = newOption
-            localStorage.setItem('state', JSON.stringify(savedState))
+            sessionStorage.setItem('state', JSON.stringify(savedState))
         }
     }
 
@@ -38,130 +44,78 @@ export default function Home(props: { toggleTheme:MouseEventHandler<HTMLAnchorEl
         if (newOption != null) {
             setPrepend(newOption)
 
-            let savedState = JSON.parse(localStorage.getItem('state'))
+            let savedState = JSON.parse(sessionStorage.getItem('state'))
             savedState.prepend = newOption
-            localStorage.setItem('state', JSON.stringify(savedState))
+            sessionStorage.setItem('state', JSON.stringify(savedState))
         }
-    }
-
-    const handleLogIn = async (username: string, password: string) => {
-        if ((await signIn('credentials', { redirect: false, username, password })).ok) {
-            setLogin(false)
-            return true
-        }
-        return false
-    }
-
-    const handleLogOut = () => {
-        let savedState = JSON.parse(localStorage.getItem('state'))
-        savedState.prepend = false
-        savedState.user = null
-        localStorage.setItem('state', JSON.stringify(savedState))
-        sessionStorage.setItem('state', JSON.stringify({ tab: 'submit' }))
-        signOut()
-    }
-
-    const handleSignUp = async (username: string, password: string) => {
-        const response = await fetch('/api/auth/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        })
-
-        if (response.status === 200) {
-            setSignup(false)
-            handleLogIn(username, password)
-            return true
-        }
-
-        return false
     }
 
     const handleTabChange = (_: React.MouseEvent<HTMLElement>, newTab: string | null) => {
-        if ((newTab === 'submit' || newTab === 'data') && newTab !== null ) {
+        if ((newTab === 'submit' || newTab === 'history') && newTab !== null ) {
             setTab(newTab)
-            sessionStorage.setItem('state', JSON.stringify({ tab: newTab }))
+            let savedState = JSON.parse(sessionStorage.state)
+            savedState.tab = newTab
+            sessionStorage.setItem('state', JSON.stringify(savedState))
         }
     }
 
-    const handleToggleMenu = () => {
-        menu ? setMenu(false) : setMenu(true)
-    }
+    const loadData = useCallback(async () => {
+        if (session) {
+            const response = await fetch('/api/links/')
+
+            if (response.status === 200) {
+                setHistory((await response.json()).data.reverse())
+            }
+
+            setLoaded(true)
+        }
+    }, [session])
 
     useEffect(() => {
-        const savedState = JSON.parse(localStorage.getItem('state'))
-        setLength(savedState.length)
-        setPrepend(savedState.prepend)
-        if (sessionStorage.getItem('state')) {
-            setTab(JSON.parse(sessionStorage.getItem('state')).tab)
+        const state = sessionStorage.getItem('state')
+        if (state) {
+            const savedState = JSON.parse(state)
+            setLength(savedState.length)
+            setPrepend(savedState.prepend)
+            setRecent(savedState.recent)
+            setTab(savedState.tab)
         } else {
             sessionStorage.setItem('state', JSON.stringify({
+                recent: [],
+                length: 8,
+                prepend: false,
+                theme: 'dark',
                 tab: 'submit'
             }))
-        }
-    }, [])
+        }        
+        loadData()
+    }, [loadData])
 
     return (
-        <>
-            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <Header toggleDrawer={handleToggleMenu} toggleTheme={props.toggleTheme} theme={props.theme} />
-                
-                <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Container maxWidth='md' sx={{ textAlign: 'center' }}>
-                        <Box sx={{ my: 4, userSelect: 'none' }}>
-                            <Typography variant='h1' component='h1' sx={{ fontSize: {xs: '16vw', sm: 'h1.fontSize'}, fontWeight: 800 }}>
-                                Short
-                            </Typography>
-                            <Typography>
-                                A simple URL shortener.
-                            </Typography>
-                        </Box>
-
-                        <Form
-                            handleTabChange={handleTabChange}
-                            length={length}
-                            prepend={prepend}
-                            tab={tab}
-                            theme={props.theme}
-                            session={session}
-                        />
-                    </Container>                    
-                </Box>
-
-                <Footer />
+        <Layout handleChangeLength={handleChangeLength} handleChangePrepend={handleChangePrepend} handleChangeTheme={handleChangeTheme} length={length} prepend={prepend} session={session} theme={props.theme}>
+            <Box sx={{ my: 4, userSelect: 'none' }}>
+                <Typography variant='h1' component='h1' sx={{ fontSize: {xs: '16vw', sm: 'h1.fontSize'}, fontWeight: 800 }}>
+                    Short
+                </Typography>
+                <Typography>
+                    A simple URL shortener.
+                </Typography>
             </Box>
 
-            <LogInMenu
-                handleCloseLogIn={() => setLogin(false)}
-                login={login}
-                handleLogIn={handleLogIn}
-            />
+            <Box sx={{ my: 4 }}>
+                {session && <TabToggle handleTabChange={handleTabChange} tab={tab} />}
 
-            <SignUpMenu
-                handleCloseSignUp={() => setSignup(false)}
-                signup={signup}
-                handleSignUp={handleSignUp}
-            />
-            
-            <Menu
-                menu={menu}
-                handleChangeTheme={handleChangeTheme}
-                handleChangeLength={handleChangeLength}
-                handleChangePrepend={handleChangePrepend}
-                handleLogOut={handleLogOut}
-                handleShowLogIn={() => setLogin(true)}
-                handleShowSignup={() => setSignup(true)}
-                handleToggleMenu={handleToggleMenu}
-                length={length}
-                theme={props.theme}
-                prepend={prepend}
-                session={session}
-            />
-        </>
+                {tab === 'submit' ?
+                    <>
+                    <Form addRecent={addRecent} loadData={loadData} length={length} prepend={prepend} />
+                    {recent && recent.length > 0 && tab ==='submit' && <RecentEntries recent={recent} />}
+                    </>
+                : 
+                    <>
+                    {session && <HistoryEntries history={history} loaded={loaded} session={session} />}
+                    </>
+                }
+            </Box>
+        </Layout>
     )
 }

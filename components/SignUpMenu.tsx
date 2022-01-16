@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import LoadingButton from '@mui/lab/LoadingButton'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
@@ -24,15 +24,6 @@ export default function SignUpMenu(props: {
             setError(false)
             setErrorMessage('')
             setPasswordInput(password)
-        }
-    }
-    
-    const handleUserInput = (event: ChangeEvent<HTMLInputElement>) => {
-        const username = event.target.value
-        if (username.length <= 16) {
-            setError(false)
-            setErrorMessage('')
-            setUserInput(username)
         }
     }
 
@@ -63,6 +54,15 @@ export default function SignUpMenu(props: {
         }
 
         setLoading(false)
+    }
+
+    const handleUserInput = (event: ChangeEvent<HTMLInputElement>) => {
+        const username = event.target.value
+        if (username.length <= 16) {
+            setError(false)
+            setErrorMessage('')
+            setUserInput(username)
+        }
     }
     
     return (

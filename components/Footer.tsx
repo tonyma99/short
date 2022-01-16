@@ -6,7 +6,7 @@ export default function Footer() {
   return (
       <Box sx={{ display: 'flex', p: 2 }}> 
           <Container sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-              <Typography sx={{ color: 'text.disabled', fontSize: '0.8em', userSelect: 'none' }}>
+              <Typography color='text.disabled' fontSize={12} sx={{ userSelect: 'none' }}>
                   Tony Ma, 2021
               </Typography>
           </Container>

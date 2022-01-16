@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -18,7 +18,6 @@ export default function Redirect(props: { host: string, protocol: string, ip: st
                 const url = (await response.json()).url
                 setUrl(url)
                 setLoad(true)
-                await new Promise(resolve => setTimeout(resolve, 1000))
                 router.push(url)
             } else {
                 router.push('/')

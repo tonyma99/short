@@ -8,18 +8,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     const [mode, setMode] = useState<'light' | 'dark'>('dark')
-    const [load, setLoad] = useState(false)
 
     const toggleTheme = () => {
         if (mode === 'light') {
-            let savedState = JSON.parse(localStorage.getItem('state'))
+            let savedState = JSON.parse(sessionStorage.getItem('state'))
             savedState.theme = 'dark'
-            localStorage.setItem('state', JSON.stringify(savedState))
+            sessionStorage.setItem('state', JSON.stringify(savedState))
             setMode('dark')
         } else {
-            let savedState = JSON.parse(localStorage.getItem('state'))
+            let savedState = JSON.parse(sessionStorage.getItem('state'))
             savedState.theme = 'light'
-            localStorage.setItem('state', JSON.stringify(savedState))
+            sessionStorage.setItem('state', JSON.stringify(savedState))
             setMode('light')
         }
     }
@@ -30,72 +29,19 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
         () =>
             createTheme({
                 typography: { 
-                    button: {
-                        fontWeight: 'bold',
-                        textTransform: 'none'
-                    },
-                    fontFamily: '"Open Sans", "Roboto", "Helvetica", "Arial", sans-serif'
+                    button: { fontWeight: 'bold', textTransform: 'none' },
+                    fontFamily: 'Open Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif'
                 },
                 components: {
-                    MuiAlert: { styleOverrides: {
-                        root: {
-                            fontWeight: 'bold',
-                            paddingTop: '8px',
-                            paddingBottom: '8px'
-                        }
-                    }},
-                    MuiButton: { styleOverrides: {
-                        root: {
-                            '&:hover': { backgroundColor: globalTheme.palette.primary.dark },
-                            '&, &:hover, &:active': { boxShadow: 'none'},
-                            backgroundColor: globalTheme.palette.primary.main,
-                            color: 'globalTheme.palette.primary.contrastText',
-                        }
-                    }},
+                    MuiButton: { styleOverrides: { root: { '&:hover': { backgroundColor: globalTheme.palette.primary.dark }, '&, &:hover, &:active': { boxShadow: 'none'}, backgroundColor: globalTheme.palette.primary.main, color: 'globalTheme.palette.primary.contrastText' } } },
                     MuiButtonBase: { defaultProps: { disableRipple: true } },
-                    MuiIconButton: { styleOverrides: {
-                        root: {
-                            borderColor: mode === 'dark' ? '#515151' : '#e0e0e0',
-                            borderRadius: 12,
-                            borderStyle: 'solid',
-                            borderWidth: '1px',
-                            padding: '8px',
-                        }
-                    }},
-                    MuiInputLabel: { styleOverrides: {
-                        root: {
-                            fontWeight: 'bold',
-                            userSelect: 'none'
-                        }
-                    }},
-                    MuiTextField: { styleOverrides: {
-                        root: {
-                            '& input, & select': {
-                                fontWeight: 'bold'
-                            },
-                        }
-                    }},
-                    MuiSnackbar: { styleOverrides: {
-                        root: {
-                            bottom: '16px',
-                            left: '16px',
-                            right: '16px'
-                        }
-                    }},
+                    MuiIconButton: { styleOverrides: { root: { borderColor: globalTheme.palette.divider, borderRadius: 12, borderStyle: 'solid', borderWidth: '1px', padding: '8px' } } },
+                    MuiInputLabel: { styleOverrides: { root: { fontWeight: 500, userSelect: 'none' } } },
+                    MuiTextField: { styleOverrides: { root: { '& input, & select': { fontWeight: 500 } } } },
                     MuiSvgIcon: { defaultProps: { fontSize: 'small' }},
-                    MuiTableContainer: { styleOverrides: {
-                        root: {
-                            borderColor: mode === 'dark' ? '#515151' : '#e0e0e0',
-                            borderRadius: 12,
-                            borderStyle: 'solid',
-                            borderWidth: 1
-                        }
-                    }},
-                    MuiToggleButton: { styleOverrides: {
-                        root: {
-                            color: globalTheme.palette.text.secondary
-                        }
-                    }}
+                    MuiTableCell: { styleOverrides: { root: { borderBottomColor: globalTheme.palette.divider } } },
+                    MuiTableContainer: { styleOverrides: { root: { borderColor: globalTheme.palette.divider, borderRadius: 12, borderStyle: 'solid', borderWidth: 1 } } },
+                    MuiToggleButton: { styleOverrides: { root: { color: globalTheme.palette.text.secondary } } }
                 },
                 palette: { mode },
                 shape: { borderRadius: 12 }
@@ -104,36 +50,33 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     )
 
     useEffect(() => {
-        const savedState = localStorage.getItem('state')
-        if (savedState) {
-            setMode(JSON.parse(savedState).theme)
-        } else {
-            localStorage.setItem('state', JSON.stringify(
-                {
-                    data: [],
-                    length: 8,
-                    prepend: false,
-                    theme: 'dark',
-                    user: null
-                }
-            ))
+        const loadTheme = () => {
+            if (sessionStorage.state) {
+                const savedTheme = JSON.parse(sessionStorage.state).theme
+                if (mode !== savedTheme) setMode(savedTheme)
+            }
         }
-        setLoad(true)
-    }, [])
+        loadTheme()
+    }, [mode])
 
     return (
-        <SessionProvider session={session}>
+        <>
             <Head>
                 <title>Short</title>
                 <meta name="description" content="URL shortener" />
                 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width" />
                 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📎</text></svg>" />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" />
+                <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700;800&display=swap" rel="stylesheet" key="font" />
             </Head>
-            
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                { load ? <Component {...pageProps} toggleTheme={toggleTheme} theme={mode} /> : null }           
-            </ThemeProvider>
-        </SessionProvider>
+
+            <SessionProvider session={session}>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <Component {...pageProps} toggleTheme={toggleTheme} theme={mode} />
+                </ThemeProvider>
+            </SessionProvider>
+        </>
     )
 }

@@ -1,49 +1,22 @@
-import React, { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
-import { Session } from 'next-auth'
-import DataTable from './DataTable'
-import AttachmentRoundedIcon from '@mui/icons-material/AttachmentRounded'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
-import InsertChartRoundedIcon from '@mui/icons-material/InsertChartRounded'
-import { alpha } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
-import Box from '@mui/material/Box'
+import { useState } from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import Container from '@mui/material/Container'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
-import Paper from '@mui/material/Paper'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableRow from '@mui/material/TableRow'
+import LoadingButton from '@mui/lab/LoadingButton'
 import TextField from '@mui/material/TextField'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 
-let dataRows: { fullUrl: string, shortUrl: string, created: string, count: number }[] = []
-let recentRows: { full: string, short: string }[] = []
-
-export default function Form(props: { length: number, prepend: boolean, session: Session, tab: string, theme: string, handleTabChange: (_: React.MouseEvent<HTMLElement>, newTab: string) => void }) {
-    const [copied, setCopied] = useState('')
+export default function Form(props: {
+    addRecent: (entry: RecentEntryJSON) => void,
+    loadData: () => void,
+    length: number,
+    prepend: boolean
+}) {
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    const [hidden, setHidden] = useState(true)
     const [input, setInput] = useState('')
-    const [loaded, setLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const handleCopyButtonClicked = async (url: string) => {
-        setCopied(url)
-        navigator.clipboard.writeText(url)
-        await new Promise(resolve => setTimeout(resolve, 1500))
-        setCopied('')
-    }
-
-    const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         const pattern = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g)
         const value = event.target.value
         setErrorMessage('')
@@ -55,7 +28,7 @@ export default function Form(props: { length: number, prepend: boolean, session:
         setInput(value)
     }
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         setInput('')
@@ -74,15 +47,10 @@ export default function Form(props: { length: number, prepend: boolean, session:
         })
 
         if (response.status === 200) {
-            recentRows = JSON.parse(localStorage.getItem('state')).data
-            recentRows.push({
-                full: input,
-                short: (await response.json()).shortUrl
+            props.addRecent({
+                fullUrl: input,
+                shortUrl: (await response.json()).shortUrl
             })
-            let savedState = JSON.parse(localStorage.getItem('state'))
-            savedState.data = recentRows
-            localStorage.setItem('state', JSON.stringify(savedState))
-            setHidden(false)
         } else {
             setError(true)
             if (response.status === 400) {
@@ -94,133 +62,40 @@ export default function Form(props: { length: number, prepend: boolean, session:
             }
         }
 
-        await loadData()
+        props.loadData()
         setLoading(false)
     }
 
-    const loadData = useCallback(async () => {
-        if (props.session) {
-            const response = await fetch('/api/links/')
-
-            if (response.status === 200) {
-                dataRows = (await response.json()).data.reverse()
-            }
-
-            setLoaded(true)
-        }
-    }, [props.session])
-
-    useEffect(() => {
-        const savedState = JSON.parse(localStorage.getItem('state'))
-        if (savedState.data.length > 0) {
-            recentRows = savedState.data
-            setHidden(false)
-        }
-        loadData()
-    }, [loadData])
-    
     return (
-        <Box sx={{ my: 4 }}>
-            {props.session ?
-                <ToggleButtonGroup
-                    exclusive
-                    value={props.tab}
-                    onChange={props.handleTabChange}
-                    sx={{ '& > .MuiToggleButton-root': { p: 1 }, mb: 2 }}
+        <form onSubmit={handleSubmit} noValidate>
+            <Container disableGutters sx={{ display: 'flex' }}>
+                <TextField
+                    autoComplete='off'
+                    disabled={loading}
+                    error={error}
+                    helperText={errorMessage}
+                    inputProps={{
+                        autoCapitalize: 'off',
+                        autoCorrect: 'off',
+                        spellCheck: 'false'
+                    }}
+                    label='URL'
+                    onInput={handleInput}
+                    sx={{ flex: 1 }}
+                    type='url'
+                    value={input}
+                />
+                <LoadingButton
+                    disabled={error}
+                    loading={loading}
+                    loadingIndicator={<CircularProgress color='inherit' size={24} thickness={6} />}
+                    sx={{ height: 56, ml: 1 }}
+                    type='submit'
+                    variant='contained'
                 >
-                    <ToggleButton value='submit'>
-                        <AttachmentRoundedIcon />
-                    </ToggleButton>
-                    <ToggleButton value='data'>
-                        <InsertChartRoundedIcon />
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            :
-                null
-            }
-            
-            <form hidden={!(props.tab === 'submit')} onSubmit={handleSubmit} noValidate>
-                <Container disableGutters sx={{ display: 'flex' }}>
-                    <TextField
-                        autoComplete='off'
-                        disabled={loading}
-                        error={error}
-                        helperText={errorMessage}
-                        inputProps={{
-                            autoCapitalize: 'off',
-                            autoCorrect: 'off',
-                            spellCheck: 'false'
-                        }}
-                        label='URL'
-                        onInput={handleInput}
-                        sx={{ flex: 1 }}
-                        type='url'
-                        value={input}
-                    />
-                    <LoadingButton
-                        disabled={error}
-                        loading={loading}
-                        loadingIndicator={<CircularProgress color='inherit' size={24} thickness={6} />}
-                        sx={{ height: 56, ml: 1 }}
-                        type='submit'
-                        variant='contained'
-                    >
-                        <Typography sx={{ fontWeight: 'bold' }}>Shorten</Typography>
-                    </LoadingButton>
-                </Container>
-
-                <Box hidden={hidden}>
-                    <Divider sx={{ my: 2 }}></Divider>
-                    <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
-                        <Table>
-                            <TableBody>
-                                {(recentRows.slice(~5 + 1).reverse()).map((row, index) => (
-                                    <TableRow
-                                        hover
-                                        key={index}
-                                        sx={{ '&:first-of-type td, &:first-of-type th': { fontWeight: 'bold' }, '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell scope='row' sx={{ whiteSpace: 'nowrap', px: 1, py: 0, width: 0 }}>
-                                            <IconButton
-                                                sx={{ bgcolor: alpha('#FFF', 0), border: 'none' }}
-                                                onClick={() => handleCopyButtonClicked(row.short)}
-                                            >
-                                                {copied === row.short ?
-                                                <CheckRoundedIcon color='success' />
-                                                :
-                                                <ContentPasteRoundedIcon />
-                                                }
-                                            </IconButton>
-                                        </TableCell>
-                                        <TableCell sx={{ pl: 0, whiteSpace: 'nowrap' }}><Link href={row.short}>{row.short}</Link></TableCell>
-                                        <TableCell align='right' sx={{ whiteSpace: 'nowrap' }}>{row.full}</TableCell>                  
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </form>
-            
-            <Box hidden={!(props.tab === 'data')}>
-                {loaded ?
-                <Box>
-                    <Box hidden={!(dataRows.length > 0)}>
-                        <DataTable rows={dataRows} session={props.session} />
-                    </Box>
-                    
-                    <Box hidden={!(dataRows.length === 0)}>
-                        <Typography sx={{ color: 'error.main', fontWeight: 'bold', p: 2 }}>
-                            No links found
-                        </Typography>
-                    </Box>
-                </Box>
-                :
-                <Box sx={{ py: '13px' }}>
-                    <CircularProgress color='inherit' size={24} thickness={6} />
-                </Box>
-                }
-            </Box>
-        </Box>
+                    <Typography sx={{ fontWeight: 'bold' }}>Shorten</Typography>
+                </LoadingButton>
+            </Container>
+        </form>
     )
 }

@@ -38,20 +38,20 @@ export default function Menu(props: {
             transitionDuration={250}
             elevation={0}
             sx={{
-                '& .MuiDrawer-paper': { width: '360px' },
+                '& .MuiDrawer-paper': { borderLeft: 1, borderLeftColor: 'divider', width: '360px' },
                 '& .MuiToggleButton-root' : { flexGrow: 1, py: '12px' },
                 '& .MuiToggleButtonGroup-root': { flexGrow: 1 }
             }}
         >
             <List sx={{ p: 0 }}>
-                <ListItem sx={{ borderBottomColor: 'divider', borderBottomStyle: 'solid', borderBottomWidth: '1px', py: '10px' }}>
-                    <Typography variant='h6' sx={{ fontSize: '2 em', fontWeight: 'bold' }}>Settings</Typography>
+                <ListItem sx={{ borderBottomColor: 'divider', borderBottomStyle: 'solid', borderBottomWidth: '1px', py: 1 }}>
+                    <Typography fontWeight={700} variant='h6'>Settings</Typography>
                     <IconButton onClick={props.handleToggleMenu} sx={{ ml: 'auto' }}>
                         <CloseRoundedIcon/>
                     </IconButton>
                 </ListItem>
             </List>
-            <List sx={{ '& .MuiTypography-root': { fontSize: '1em', fontWeight: 'bold' }, '& .IconToggleButton > .MuiTypography-root': { ml: 1 }, mb: 'auto' }}>
+            <List sx={{ '& .MuiSvgIcon-root': { mr: 1 }, mb: 'auto' }}>
                 {props.session ?
                 <ListItem sx={{ }}>
                     <ToggleButton onChange={props.handleLogOut} value={0} className='IconToggleButton'
@@ -63,7 +63,7 @@ export default function Menu(props: {
                         }}
                     >
                         <LogoutRoundedIcon />
-                        <Typography>{props.session.user.username}</Typography>
+                        {props.session.user.username}
                     </ToggleButton>
                 </ListItem>
                 :
@@ -71,83 +71,63 @@ export default function Menu(props: {
                 <ListItem sx={{  }}>
                     <ToggleButton onChange={props.handleShowLogIn} value={0} className='IconToggleButton' sx={{ color: 'text.primary' }}>
                         <LoginRoundedIcon />
-                        <Typography>Log In</Typography>
+                        Log In
                     </ToggleButton>
                 </ListItem>
                 <ListItem sx={{  }}>
                     <ToggleButton onChange={props.handleShowSignup} value={0} className='IconToggleButton' sx={{ color: 'text.primary' }}>
                         <AssignmentIndRoundedIcon />
-                        <Typography>Sign Up</Typography>
+                        Sign Up
                     </ToggleButton>
                 </ListItem>
                 </>
                 }
                     
-                <ListItem sx={{ pb: 0 }}>
-                    <Typography>Theme</Typography>
+                <ListItem sx={{ color: 'text.secondary', fontSize: 14, pb: 0 }}>
+                    Theme
                 </ListItem>
                 <ListItem>
                     <ToggleButtonGroup value={props.theme} exclusive onChange={props.handleChangeTheme}>
                         <ToggleButton value='dark' className='IconToggleButton'>
                             <DarkModeRoundedIcon />
-                            <Typography>
-                                Dark
-                            </Typography>
+                            Dark
                         </ToggleButton>
                         <ToggleButton value='light' className='IconToggleButton'>
                             <LightModeRoundedIcon />
-                            <Typography>
-                                Light
-                            </Typography>
+                            Light
                         </ToggleButton>
                     </ToggleButtonGroup>
                 </ListItem>
-                <ListItem sx={{ pb: 0 }}>
-                    <Typography>Prepend User ID</Typography>
+                <ListItem sx={{ color: 'text.secondary', fontSize: 14, pb: 0 }}>
+                    Prepend User
                 </ListItem>
                 <ListItem>
                     <ToggleButtonGroup value={props.prepend} exclusive onChange={(_, newOption) => props.handleChangePrepend(newOption)}>
-                        <ToggleButton disabled={!props.session} value={true}>
-                            <Typography>
-                                Enabled
-                            </Typography>
-                        </ToggleButton>
-                        <ToggleButton value={false}>
-                            <Typography>
-                                Disabled
-                            </Typography>
-                        </ToggleButton>
+                        <ToggleButton disabled={!props.session} value={true}>Enabled</ToggleButton>
+                        <ToggleButton value={false}>Disabled</ToggleButton>
                     </ToggleButtonGroup>
                 </ListItem>
-                <ListItem sx={{ pb: 0 }}>
-                    <Typography>Link Length</Typography>
+                <ListItem sx={{ color: 'text.secondary', fontSize: 14, pb: 0 }}>
+                    Link Length
                 </ListItem>
                 <ListItem>
                     <ToggleButtonGroup value={props.length} exclusive fullWidth onChange={(_, newOption) => props.handleChangeLength(newOption)}>
-                        <ToggleButton value={8}>
-                            <Typography>8</Typography>
-                        </ToggleButton>
-                        <ToggleButton value={12}>
-                            <Typography>12</Typography>
-                        </ToggleButton>
-                        <ToggleButton value={16}>
-                            <Typography>16</Typography>
-                        </ToggleButton>
-                        <ToggleButton value={20}>
-                            <Typography>20</Typography>
-                        </ToggleButton>
+                        <ToggleButton value={8}>8</ToggleButton>
+                        <ToggleButton value={12}>12</ToggleButton>
+                        <ToggleButton value={16}>16</ToggleButton>
+                        <ToggleButton value={20}>20</ToggleButton>
                     </ToggleButtonGroup>
                 </ListItem>
             </List>
-            <List sx={{ '& .MuiTypography-root': { fontSize: '1em', fontWeight: 'bold', ml: 1, mr: 0.5 } }}>
+            <List sx={{ '& .MuiSvgIcon-root': { mr: 1 } }}>
                 <ListItem sx={{ '& > .MuiToggleButton-root' : { color: 'text.primary', flexGrow: 1, p: 1.5 }, mt: 'auto' }}>
                     <ToggleButton href='https://github.com/tonyma99/short' value={0}>
                         <GitHubIcon />
-                        <Typography>GitHub</Typography>
+                        GitHub
                     </ToggleButton>
                     <ToggleButton href='https://tonyma.ca' value={0} sx={{ ml: 1 }}>
                         <HomeRoundedIcon />
-                        <Typography>Website</Typography>
+                        Website
                     </ToggleButton>
                 </ListItem>
             </List>
