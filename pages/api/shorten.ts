@@ -18,9 +18,47 @@ async function checkDomain(url: string) {
     return ''
 }
 
+const lookupSafeBrowsing = async (targetUrl: string) => {
+    const url = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_SAFE_BROWSING_API}`
+    
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "client": {
+                "clientId":      "tonyma99/short",
+                "clientVersion": "1.0.0"
+            },
+            "threatInfo": {
+                "threatTypes":      ["THREAT_TYPE_UNSPECIFIED", "MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
+                "platformTypes":    ["ANY_PLATFORM"],
+                "threatEntryTypes": ["URL"],
+                "threatEntries": [
+                    {"url": targetUrl},
+                ]
+            }
+        })
+    })
+
+    const body = await response.json()
+
+    if (body.matches) {
+        return false
+    }
+
+    return true
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
+        if (!lookupSafeBrowsing(req.body.url)) {
+            return res.status(406).end()
+        }
+
         const fullUrl = await checkDomain(req.body.url)
+
         if (!fullUrl) {
             return res.status(400).end()
         }
