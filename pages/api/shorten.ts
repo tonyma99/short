@@ -53,7 +53,7 @@ const lookupSafeBrowsing = async (targetUrl: string) => {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        if (!lookupSafeBrowsing(req.body.url)) {
+        if (!await lookupSafeBrowsing(req.body.url)) {
             return res.status(406).end()
         }
 
