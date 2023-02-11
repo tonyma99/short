@@ -57,6 +57,8 @@ export default function Form(props: {
                 setErrorMessage('Invalid URL.')
             } else if (response.status === 500) {
                 setErrorMessage('The application has encountered an internal server error.')
+            } else if (response.status === 406) {
+                setErrorMessage('The specified URL has been marked as potentially harmful.')
             } else {
                 setErrorMessage('The application has encountered an unknown error.')
             }
