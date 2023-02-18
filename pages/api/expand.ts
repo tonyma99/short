@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getLink, updateLink } from '@lib/mongodb'
+import { getLink, updateLink } from '@lib/utils/mongodb'
 
 export default async function handler(
   req: NextApiRequest,

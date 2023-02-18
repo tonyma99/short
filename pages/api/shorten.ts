@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createLink } from '@lib/mongodb'
-import { lookupSafeBrowsing } from '@lib/helpers'
+import { createLink } from '@lib/utils/mongodb'
+import { lookupSafeBrowsing } from '@lib/utils/helpers'
 
 export default async function handler(
   req: NextApiRequest,

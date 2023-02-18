@@ -1,3 +1,21 @@
+export class Client {
+  country: string
+  region: string
+  city: string
+  constructor(headers: any) {
+    this.country = headers['x-vercel-ip-country']
+    this.region = headers['x-vercel-ip-country-region']
+    this.city = headers['x-vercel-ip-city']
+  }
+  get() {
+    return {
+      country: this.country,
+      region: this.region,
+      city: this.city,
+    }
+  }
+}
+
 export const lookupSafeBrowsing = async (url: string) => {
   const api = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_SAFE_BROWSING_API}`
   const res = await fetch(api, {

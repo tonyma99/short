@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb'
 import type { IncomingHttpHeaders } from 'http'
 import { nanoid } from 'nanoid'
-import { Client } from '@lib/utils'
+import { Client } from '@lib/utils/helpers'
 
 if (!process.env.MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
