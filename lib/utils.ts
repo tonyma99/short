@@ -1,10 +1,8 @@
-import { IncomingHttpHeaders } from 'http'
-
 export class Client {
-  country
-  region
-  city
-  constructor(headers: IncomingHttpHeaders) {
+  country: string
+  region: string
+  city: string
+  constructor(headers: any) {
     this.country = headers['x-vercel-ip-country']
     this.region = headers['x-vercel-ip-country-region']
     this.city = headers['x-vercel-ip-city']

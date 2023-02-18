@@ -10,20 +10,14 @@ export default async function handler(
     return
   }
   try {
-    const { headers } = req
-    const { id } = req.query
-    let url
-    if (id) {
-      try {
-        url = await getLink(id)
-        updateLink(id, headers)
-      } catch {
-        res.status(400).json({ message: 'The specified code is invalid.' })
-        return
-      }
+    const { id }: any = req.query
+    try {
+      const url = await getLink(id)
+      updateLink(id)
+      res.status(200).json({ url })
+    } catch {
+      res.status(400).json({ message: 'The specified code is invalid.' })
     }
-
-    res.status(200).json({ url })
   } catch {
     res.status(500).json({ message: 'Internal server error.' })
   }

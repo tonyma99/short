@@ -64,7 +64,7 @@ export const createLink = async (
   }
 }
 
-export const getLink = async (id: string | string[]) => {
+export const getLink = async (id: string) => {
   const links = await linksCollection()
   const result = await links.findOne({ id })
   if (result) {
@@ -74,10 +74,7 @@ export const getLink = async (id: string | string[]) => {
   }
 }
 
-export const updateLink = async (
-  id: string | string[],
-  headers?: IncomingHttpHeaders
-) => {
+export const updateLink = async (id: string) => {
   const links = await linksCollection()
   await links.updateOne(
     { id },
@@ -85,10 +82,6 @@ export const updateLink = async (
       $push: {
         clicks: {
           date: new Date(),
-          ...(headers &&
-            process.env.VERCEL === '1' && {
-              client: new Client(headers).get(),
-            }),
         },
       },
     }
