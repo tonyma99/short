@@ -7,6 +7,7 @@ export default async function handler(
 ) {
   if (req.method !== 'GET') {
     res.status(405).json({ message: `${req.method} method not allowed.` })
+    return
   }
   try {
     const { headers } = req
@@ -18,6 +19,7 @@ export default async function handler(
         updateLink(id, headers)
       } catch {
         res.status(400).json({ message: 'The specified code is invalid.' })
+        return
       }
     }
 
