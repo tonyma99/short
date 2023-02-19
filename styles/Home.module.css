@@ -196,7 +196,7 @@
 .success {
   cursor: pointer;
   background-color: #40814040;
-  border: solid #40814070;
+  border: 1px solid #40814070;
 }
 
 .success:hover {
@@ -210,7 +210,7 @@
 
 .error {
   background-color: #FA113D40;
-  border: solid #FA113D70;
+  border: 1px solid #FA113D70;
 }
 
 /* Enable hover only on non-touch devices */
