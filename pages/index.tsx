@@ -85,7 +85,7 @@ export default function Home() {
               <input
                 value={value}
                 name="url"
-                type="text"
+                type="url"
                 placeholder="https://google.com"
                 onChange={(e) => setValue(e.target.value)}
                 required
