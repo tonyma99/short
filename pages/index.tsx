@@ -81,7 +81,7 @@ export default function Home() {
             </div>
           </div>
           <div className={styles.form}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <input
                 value={value}
                 name="url"
