@@ -31,16 +31,17 @@ if (process.env.NODE_ENV === 'development') {
 // separate module, the client can be shared across functions.
 export default clientPromise
 
-export const linksCollection = async () => {
-  if (!process.env.MONGODB_LINKS || !process.env.MONGODB_DB) {
-    throw new Error(
-      'Invalid/Missing environment variable(s): "MONGODB_DB" or "MONGODB_LINKS'
-    )
+/*****************************************************************************/
+/*                             HELPER FUNCTIONS                              */
+/*****************************************************************************/
+
+export const getCollection = async (name: string | undefined) => {
+  if (!name) {
+    throw new Error('Invalid/Missing environment variable')
   }
-  const client = await clientPromise
-  const db = client.db(process.env.MONGODB_DB)
-  const links = db.collection<Link>(process.env.MONGODB_LINKS)
-  return links
+  const db = (await clientPromise).db(process.env.MONGODB_DB)
+  const collection = db.collection(name)
+  return collection
 }
 
 export const createLink = async (
@@ -55,7 +56,7 @@ export const createLink = async (
     ...(headers &&
       process.env.VERCEL === '1' && { client: new Client(headers).get() }),
   }
-  const links = await linksCollection()
+  const links = await getCollection(process.env.MONGODB_LINKS)
   const result = await links.insertOne(link)
   if (result.insertedId) {
     return link
@@ -65,7 +66,7 @@ export const createLink = async (
 }
 
 export const getLink = async (id: string) => {
-  const links = await linksCollection()
+  const links = await getCollection(process.env.MONGODB_LINKS)
   const result = await links.findOne({ id })
   if (result) {
     return result.target
@@ -75,7 +76,7 @@ export const getLink = async (id: string) => {
 }
 
 export const updateLink = async (id: string) => {
-  const links = await linksCollection()
+  const links = await getCollection(process.env.MONGODB_LINKS)
   await links.updateOne(
     { id },
     {

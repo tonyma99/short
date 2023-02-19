@@ -74,10 +74,12 @@
 
 .center {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
   padding: 4rem 0;
+  gap: 2rem;
 }
 
 .center::before {
@@ -102,6 +104,11 @@
   position: absolute;
   filter: blur(45px);
   transform: translateZ(0);
+}
+
+.next {
+  display: flex;
+  align-items: center;
 }
 
 .logo,
@@ -149,6 +156,61 @@
     rgba(var(--tile-end-rgb), 1)
   );
   background-clip: content-box;
+}
+
+.form {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form input {
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  background-color: #ffffff22;
+  padding: 0.6rem;
+  border: solid #ffffff40;
+  width: 320px;
+}
+
+.form input::placeholder {
+  color: #ffffff40;
+}
+
+.alert {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  color: #ffffffdd;
+  transition: 0.2s;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.success {
+  cursor: pointer;
+  background-color: #40814040;
+  border: solid #40814070;
+}
+
+.success:hover {
+  background-color: #40814070;
+}
+
+.success:active, .success:focus {
+  background-color: #40814040;
+  transition: 0.05s;
+}
+
+.error {
+  background-color: #FA113D40;
+  border: solid #FA113D70;
 }
 
 /* Enable hover only on non-touch devices */
@@ -258,7 +320,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  .vercelLogo {
+  .vercelLogo, .copy, .triangle {
     filter: invert(1);
   }
 
