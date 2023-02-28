@@ -43,30 +43,24 @@ export default clientPromise
 /*                             HELPER FUNCTIONS                              */
 /*****************************************************************************/
 
-export class Links {
-	links: Collection<Link> | null
+let links: Collection<Link>
 
-	constructor() {
-		this.links = null
-	}
+export const Links = {
+	connect: async () => {
+		if (links === undefined) {
+			const db = (await clientPromise).db(process.env.MONGODB_DB)
+			links = db.collection<Link>(process.env.MONGODB_LINKS)
+		}
+	},
 
-	connect = async () => {
-		const db = (await clientPromise).db(process.env.MONGODB_DB)
-		const links = db.collection<Link>(process.env.MONGODB_LINKS)
-		this.links = links
-	}
+	get: async (id: string) => {
+		const result = await links.findOne({ id })
+		if (result) {
+			return result.target
+		}
+	},
 
-	get = async (id: string) => {
-		try {
-			const links = this.links as Collection<Link>
-			const result = await links.findOne({ id })
-			if (result) {
-				return result.target
-			}
-		} catch {}
-	}
-
-	create = async (url: string, headers?: Headers) => {
+	create: async (url: string, headers?: Headers) => {
 		const id = nanoid(8)
 		const link = {
 			id,
@@ -74,17 +68,13 @@ export class Links {
 			created: new Date(),
 			...(headers && process.env.VERCEL === '1' && { client: new Client(headers).get() })
 		}
-		const links = this.links as Collection<Link>
 		const result = await links.insertOne(link)
 		if (result.insertedId) {
-			return link
-		} else {
-			throw new Error()
+			return link.id
 		}
-	}
+	},
 
-	update = async (id: string) => {
-		const links = this.links as Collection<Link>
+	update: async (id: string) => {
 		await links.updateOne(
 			{ id },
 			{

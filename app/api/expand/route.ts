@@ -5,13 +5,13 @@ export async function GET(request: Request) {
 		const { searchParams } = new URL(request.url)
 		const id = searchParams.get('id') as string
 
-		try {
-			const links = new Links()
-			await links.connect()
-			const url = await links.get(id)
-			await links.update(id)
+		await Links.connect()
+		await Links.update(id)
+		const url = await Links.get(id)
+
+		if (url) {
 			return new Response(url)
-		} catch {
+		} else {
 			return new Response('The specified code is invalid.', { status: 400 })
 		}
 	} catch {

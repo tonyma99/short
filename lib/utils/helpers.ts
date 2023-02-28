@@ -1,12 +1,12 @@
 export class Client {
-	country: string | null
-	region: string | null
-	city: string | null
+	country: string
+	region: string
+	city: string
 
 	constructor(headers: Headers) {
-		this.country = headers.get('x-vercel-ip-country')
-		this.region = headers.get('x-vercel-ip-country-region')
-		this.city = headers.get('x-vercel-ip-city')
+		this.country = headers.get('x-vercel-ip-country') as string
+		this.region = headers.get('x-vercel-ip-country-region') as string
+		this.city = headers.get('x-vercel-ip-city') as string
 	}
 
 	get() {
