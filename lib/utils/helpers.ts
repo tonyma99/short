@@ -18,7 +18,7 @@ export class Client {
 	}
 }
 
-export const lookupSafeBrowsing = async (url: string) => {
+export const safeBrowsingLookup = async (url: string) => {
 	const api = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_API_KEY}`
 	const res = await fetch(api, {
 		method: 'POST',

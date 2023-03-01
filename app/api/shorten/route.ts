@@ -1,5 +1,5 @@
 import { Links } from '@lib/utils/db'
-import { completeUrl, lookupSafeBrowsing, validateUrl } from '@lib/utils/helpers'
+import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/utils/helpers'
 
 export async function POST(request: Request) {
 	try {
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 			return new Response('The specified URL is not invalid.', { status: 400 })
 		}
 
-		if (!(await lookupSafeBrowsing(url))) {
+		if (!(await safeBrowsingLookup(url))) {
 			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 
