@@ -38,7 +38,7 @@ export const safeBrowsingLookup = async (url: string) => {
 				],
 				platformTypes: ['ANY_PLATFORM'],
 				threatEntryTypes: ['URL'],
-				threatEntries: [{ url: url }]
+				threatEntries: [{ url }]
 			}
 		})
 	})

@@ -87,7 +87,7 @@ export const Blacklist = {
 	},
 	check: async (url: string) => {
 		const host = new URL(url).hostname
-		const result = await blacklist.findOne({ url: new RegExp(host, 'i') })
+		const result = await blacklist.findOne({ url: host })
 		if (result?._id) {
 			return true
 		} else {
