@@ -1,4 +1,4 @@
-import { Links } from '@lib/utils/db'
+import { Blacklist, Links } from '@lib/utils/db'
 import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/utils/helpers'
 
 export async function POST(request: Request) {
@@ -15,10 +15,17 @@ export async function POST(request: Request) {
 		const url = completeUrl(target)
 
 		if (!validateUrl(url)) {
-			return new Response('The specified URL is not invalid.', { status: 400 })
+			return new Response('The specified URL is not valid.', { status: 400 })
+		}
+
+		await Blacklist.connect()
+
+		if (await Blacklist.check(url)) {
+			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 
 		if (!(await safeBrowsingLookup(url))) {
+			await Blacklist.add(url, headers)
 			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 

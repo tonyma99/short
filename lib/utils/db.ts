@@ -36,6 +36,7 @@ export default clientPromise
 /*****************************************************************************/
 
 let links: Collection<Link>
+let blacklist: Collection
 
 export const Links = {
 	connect: async () => {
@@ -44,14 +45,12 @@ export const Links = {
 			links = db.collection<Link>(process.env.MONGODB_LINKS)
 		}
 	},
-
 	get: async (id: string) => {
 		const result = await links.findOne({ id })
 		if (result) {
 			return result.target
 		}
 	},
-
 	create: async (url: string, headers?: Headers) => {
 		const id = nanoid(8)
 		const link = {
@@ -65,7 +64,6 @@ export const Links = {
 			return link.id
 		}
 	},
-
 	update: async (id: string) => {
 		await links.updateOne(
 			{ id },
@@ -77,5 +75,31 @@ export const Links = {
 				}
 			}
 		)
+	}
+}
+
+export const Blacklist = {
+	connect: async () => {
+		if (blacklist === undefined) {
+			const db = (await clientPromise).db(process.env.MONGODB_DB)
+			blacklist = db.collection(process.env.MONGODB_BLACKLIST)
+		}
+	},
+	check: async (url: string) => {
+		const host = new URL(url).hostname
+		const result = await blacklist.findOne({ url: new RegExp(host, 'i') })
+		if (result?._id) {
+			return true
+		} else {
+			return false
+		}
+	},
+	add: async (url: string, headers?: Headers) => {
+		const host = new URL(url).hostname
+		await blacklist.insertOne({
+			url: host,
+			date: new Date(),
+			...(headers && process.env.VERCEL === '1' && { client: new ClientDetails(headers).get() })
+		})
 	}
 }
