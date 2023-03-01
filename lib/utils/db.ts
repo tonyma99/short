@@ -1,18 +1,10 @@
 import { MongoClient } from 'mongodb'
-import { nanoid } from 'nanoid'
-import { Client } from '@lib/utils/helpers'
 import type { Collection } from 'mongodb'
+import { ClientDetails } from '@lib/utils/helpers'
+import { nanoid } from 'nanoid'
 
 if (!process.env.MONGODB_URI) {
 	throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
-}
-
-if (!process.env.MONGODB_LINKS) {
-	throw new Error('Invalid/Missing environment variable: "MONGODB_LINKS"')
-}
-
-if (!process.env.MONGODB_DB) {
-	throw new Error('Invalid/Missing environment variable: "MONGODB_DB"')
 }
 
 const uri = process.env.MONGODB_URI
@@ -66,7 +58,7 @@ export const Links = {
 			id,
 			target: url,
 			created: new Date(),
-			...(headers && process.env.VERCEL === '1' && { client: new Client(headers).get() })
+			...(headers && process.env.VERCEL === '1' && { client: new ClientDetails(headers).get() })
 		}
 		const result = await links.insertOne(link)
 		if (result.insertedId) {

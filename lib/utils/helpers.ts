@@ -1,4 +1,4 @@
-export class Client {
+export class ClientDetails {
 	country: string
 	region: string
 	city: string
