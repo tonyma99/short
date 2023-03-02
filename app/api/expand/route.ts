@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 		const url = await Links.get(id)
 
 		if (url) {
-			return new Response(url)
+			return new Response(JSON.stringify({ url }))
 		} else {
 			return new Response('The specified code is invalid.', { status: 400 })
 		}
