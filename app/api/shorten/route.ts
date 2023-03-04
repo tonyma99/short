@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 		}
 
 		if (await safeBrowsingLookup(url)) {
-			await Blacklist.add(url)
+			Blacklist.add(url)
 			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 
