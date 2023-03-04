@@ -1,9 +1,11 @@
 export class ClientDetails {
+	ip: string
 	country: string
 	region: string
 	city: string
 
 	constructor(headers: Headers) {
+		this.ip = headers.get('x-real-ip') as string
 		this.country = headers.get('x-vercel-ip-country') as string
 		this.region = headers.get('x-vercel-ip-country-region') as string
 		this.city = headers.get('x-vercel-ip-city') as string
@@ -11,6 +13,7 @@ export class ClientDetails {
 
 	get() {
 		return {
+			ip: this.ip,
 			country: this.country,
 			region: this.region,
 			city: this.city
@@ -45,11 +48,7 @@ export const safeBrowsingLookup = async (url: string) => {
 
 	const { matches } = await res.json()
 
-	if (matches) {
-		return false
-	} else {
-		return true
-	}
+	return matches ? true : false
 }
 
 export const completeUrl = (url: string) => {

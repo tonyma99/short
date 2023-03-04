@@ -3,9 +3,6 @@ declare global {
 		interface ProcessEnv {
 			GOOGLE_API_KEY: string
 			MONGODB_URI: string
-			MONGODB_DB: string
-			MONGODB_LINKS: string
-			MONGODB_BLACKLIST: string
 		}
 	}
 }
