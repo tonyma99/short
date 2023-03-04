@@ -5,7 +5,6 @@ export async function GET(request: Request) {
 		const { searchParams } = new URL(request.url)
 		const id = searchParams.get('id') as string
 
-		await Links.connect()
 		await Links.update(id)
 		const url = await Links.get(id)
 

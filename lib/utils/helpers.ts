@@ -45,11 +45,7 @@ export const safeBrowsingLookup = async (url: string) => {
 
 	const { matches } = await res.json()
 
-	if (matches) {
-		return false
-	} else {
-		return true
-	}
+	return matches ? true : false
 }
 
 export const completeUrl = (url: string) => {
