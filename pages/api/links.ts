@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const session = await getSession({ req })
 
-            const links = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_LINKS)
+            const links = (await clientPromise).db().collection('links')
             const result = links.find({ user: session.user.username })
         
             const data: { fullUrl: string, shortUrl: string, created: string, count: number }[] = []

@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         try {
-            const users = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_USERS)
+            const users = (await clientPromise).db().collection('users')
             const userLowerCase = req.body.username.toLowerCase()
 
             if (await users.findOne({ username: userLowerCase })) {

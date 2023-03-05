@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const session = await getSession({ req })
 
-            const links = (await clientPromise).db(process.env.MONGODB_DB).collection(process.env.MONGODB_LINKS)
+            const links = (await clientPromise).db().collection('links')
 
             const length = req.body.length && req.body.length <= 20 ? req.body.length : 8
             const shortUrl = session && req.body.prepend ? session.user.username + '-' + nanoid(length) : nanoid(length)

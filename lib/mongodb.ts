@@ -2,7 +2,7 @@ import { MongoClient } from 'mongodb'
 
 declare var global: any
 
-const uri = process.env.MONGODB_URI
+const uri = process.env.MONGODB_URI.replace(/mongodb.net\//, 'mongodb.net/short')
 const options = {}
 
 let client: MongoClient
