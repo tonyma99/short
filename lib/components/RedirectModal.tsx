@@ -1,5 +1,4 @@
 'use client'
-
 import styles from './RedirectModal.module.css'
 import { useRouter } from 'next/navigation'
 import { Inter } from 'next/font/google'

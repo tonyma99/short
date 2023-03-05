@@ -1,5 +1,4 @@
 'use client'
-
 import { FormEvent, useState } from 'react'
 import styles from './CreateLinkForm.module.css'
 import { Inter } from 'next/font/google'
