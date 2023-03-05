@@ -1,4 +1,5 @@
 import './globals.css'
+import { AnalyticsWrapper } from '@lib/components'
 
 export const metadata = {
 	title: 'Short',
@@ -9,6 +10,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body>{children}</body>
+			<AnalyticsWrapper />
 		</html>
 	)
 }
