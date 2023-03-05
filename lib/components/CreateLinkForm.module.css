@@ -16,7 +16,6 @@
 	border: 1px solid rgba(var(--callout-border-rgb), 0.3);
 	border-radius: var(--border-radius);
 	font-family: var(--font-mono);
-	font-size: 0.875rem;
 	padding: 16px;
 	width: 320px;
 }
@@ -31,6 +30,7 @@
 
 .link {
 	color: cornflowerblue;
+	font-size: 0.9375rem;
 }
 
 .alert {
