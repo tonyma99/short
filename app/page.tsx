@@ -10,8 +10,8 @@ export default function Home() {
 		<main className={styles.main}>
 			<div className={styles.description}>
 				<p>
-					Get started by editing&nbsp;
-					<code className={styles.code}>app/page.tsx</code>
+					Currently a WIP, see version 1&nbsp;
+					<a href="https://short-git-v1-tonyma.vercel.app">here</a>.
 				</p>
 				<div>
 					<a
@@ -19,7 +19,7 @@ export default function Home() {
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						By{' '}
+						Powered by{' '}
 						<Image
 							src="/vercel.svg"
 							alt="Vercel Logo"

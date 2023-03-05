@@ -18,7 +18,7 @@
 	font-family: var(--font-mono);
 }
 
-.description a {
+.description div a {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -34,7 +34,8 @@
 	border-radius: var(--border-radius);
 }
 
-.code {
+.description p a {
+	color: cornflowerblue;
 	font-weight: 700;
 	font-family: var(--font-mono);
 }
@@ -214,7 +215,7 @@
 		font-size: 0.8rem;
 	}
 
-	.description a {
+	.description div a {
 		padding: 1rem;
 	}
 
