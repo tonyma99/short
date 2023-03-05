@@ -60,7 +60,7 @@ export default function CreateLinkForm() {
 			)}
 			{error && (
 				<div className={[styles.alert, styles.errorAlert, inter.className].join(' ')}>
-					<p>{error}</p>
+					<p className={styles.mono}>{error}</p>
 				</div>
 			)}
 		</div>

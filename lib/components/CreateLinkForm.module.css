@@ -7,7 +7,7 @@
 
 .form,
 .form > * {
-	z-index: 2;
+	z-index: 1;
 }
 
 .form input {
