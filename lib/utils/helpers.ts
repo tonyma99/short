@@ -54,7 +54,7 @@ export const safeBrowsingLookup = async (url: string) => {
 export const completeUrl = (url: string) => {
 	const pattern = new RegExp('^([a-zA-Z]+:\\/\\/)')
 	if (!pattern.test(url)) {
-		return 'http://' + url
+		return 'https://' + url
 	}
 	return url
 }
