@@ -6,6 +6,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
+	min-width: 256px;
 	max-width: 384px;
 	padding: 24px;
 	text-align: center;
@@ -64,7 +65,6 @@
 	justify-content: center;
 	align-items: center;
 	position: relative;
-	padding: 4rem 0;
 }
 
 .center::before {
