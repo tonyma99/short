@@ -22,10 +22,11 @@ export async function POST(request: Request) {
 			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 
-		if (await safeBrowsingLookup(url)) {
-			Blacklist.add(url)
-			return new Response('The specified URL is not allowed.', { status: 400 })
-		}
+		// TODO: add caching for Safe Browsing results
+		// if (await safeBrowsingLookup(url)) {
+		// 	Blacklist.add(url)
+		// 	return new Response('The specified URL is not allowed.', { status: 400 })
+		// }
 
 		const id = await Links.create(url, headers)
 
