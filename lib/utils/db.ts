@@ -39,7 +39,7 @@ export const Links = {
 		const link = {
 			id,
 			target: url,
-			created: new Date(),
+			date: new Date(),
 			...(process.env.VERCEL === '1' && headers && { client: new ClientDetails(headers).get() })
 		}
 
