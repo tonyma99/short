@@ -7,7 +7,7 @@ export default function Home() {
 			<div className={styles.description}>
 				<p>
 					Work in progress, see version 1&nbsp;
-					<a href="https://short-git-v1-tonyma.vercel.app">here</a>
+					<a href="https://v1.short.tonyma.ca">here</a>
 				</p>
 				<div>
 					<a
