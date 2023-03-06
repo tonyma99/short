@@ -8,8 +8,7 @@ import Link from 'next/link'
 const inter = Inter({ subsets: ['latin'] })
 const descriptionText =
 	'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams.'
-const tooltipText =
-	'This warning prompt appears when the link is created by an unauthenticated user.'
+const tooltipText = 'This warning appears when the link is created by an unauthenticated user.'
 
 export default function RedirectModal({ url }: { url: string }) {
 	const router = useRouter()
@@ -26,17 +25,15 @@ export default function RedirectModal({ url }: { url: string }) {
 						{url}
 					</Link>
 				</div>
-				<div className={styles.body}>
-					<div className={styles.description}>
-						<span className={styles.descriptionText}>{descriptionText}</span>
-						<span className={styles.tooltip} data-tooltip={tooltipText}>
-							<Image src="/info.svg" alt="Information icon" width={20} height={20} priority />
-						</span>
-					</div>
-					<button onClick={handleClick} className={styles.button}>
-						Continue
-					</button>
+				<div className={styles.description}>
+					<span className={styles.descriptionText}>{descriptionText}</span>
+					<span className={styles.tooltip} data-tooltip={tooltipText}>
+						<Image src="/info.svg" alt="Information icon" width={20} height={20} priority />
+					</span>
 				</div>
+				<button onClick={handleClick} className={styles.button}>
+					Continue
+				</button>
 			</div>
 		</div>
 	)

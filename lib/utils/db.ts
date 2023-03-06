@@ -3,7 +3,6 @@ import { ClientDetails } from '@lib/utils/helpers'
 import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
-const BLACKLIST_COLLECTION = 'blacklist'
 
 export const Links = {
 	get: async (id: string) => {
@@ -46,26 +45,5 @@ export const Links = {
 				}
 			}
 		)
-	}
-}
-
-export const Blacklist = {
-	check: async (url: string) => {
-		const db = (await clientPromise).db()
-		const blacklist = db.collection(BLACKLIST_COLLECTION)
-
-		const host = new URL(url).hostname
-		const result = await blacklist.findOne({ url: host })
-
-		return result ? true : false
-	},
-
-	add: async (url: string, headers?: Headers) => {
-		const db = (await clientPromise).db()
-		const blacklist = db.collection(BLACKLIST_COLLECTION)
-
-		const host = new URL(url).hostname
-
-		await blacklist.insertOne({ url: host })
 	}
 }

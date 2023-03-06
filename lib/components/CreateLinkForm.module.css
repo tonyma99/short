@@ -57,6 +57,6 @@
 }
 
 .errorAlert {
-	color: rgb(203, 67, 53);
+	color: rgb(var(--warning-rgb));
 	font-weight: bold;
 }

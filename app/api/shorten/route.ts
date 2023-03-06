@@ -1,4 +1,4 @@
-import { Blacklist, Links } from '@lib/utils/db'
+import { Links } from '@lib/utils/db'
 import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/utils/helpers'
 
 export async function POST(request: Request) {
@@ -16,10 +16,6 @@ export async function POST(request: Request) {
 
 		if (!validateUrl(url)) {
 			return new Response('The specified URL is not valid.', { status: 400 })
-		}
-
-		if (await Blacklist.check(url)) {
-			return new Response('The specified URL is not allowed.', { status: 400 })
 		}
 
 		// TODO: add caching for Safe Browsing results
