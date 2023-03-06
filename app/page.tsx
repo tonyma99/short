@@ -4,6 +4,7 @@ import styles from './page.module.css'
 import { CreateLinkForm } from '@lib/components'
 
 const inter = Inter({ subsets: ['latin'] })
+const inter900 = Inter({ weight: '900', subsets: ['latin'] })
 
 export default function Home() {
 	return (
@@ -14,82 +15,25 @@ export default function Home() {
 					<a href="https://short-git-v1-tonyma.vercel.app">here</a>.
 				</p>
 				<div>
+					<a href="https://github.com/tonyma99/short" target="_blank" rel="noopener noreferrer">
+						GitHub
+					</a>
 					<a
-						href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+						href="https://tonyma.notion.site/Short-ce453964971d4d288b83a194b8e35be3"
 						target="_blank"
 						rel="noopener noreferrer"
 					>
-						Powered by{' '}
-						<Image
-							src="/vercel.svg"
-							alt="Vercel Logo"
-							className={styles.vercelLogo}
-							width={100}
-							height={24}
-							priority
-						/>
+						Notion
 					</a>
 				</div>
 			</div>
 
 			<div className={styles.center}>
-				<div className={styles.next}>
-					<Image
-						className={styles.logo}
-						src="/next.svg"
-						alt="Next.js Logo"
-						width={180}
-						height={37}
-						priority
-					/>
-					<div className={styles.thirteen}>
-						<Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-					</div>
-				</div>
+				<div className={styles.logo}>🔗</div>
 				<CreateLinkForm />
 			</div>
 
-			<div className={styles.grid}>
-				<a
-					href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-					className={styles.card}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={inter.className}>
-						Docs <span>-&gt;</span>
-					</h2>
-					<p className={inter.className}>
-						Find in-depth information about Next.js features and API.
-					</p>
-				</a>
-
-				<a
-					href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-					className={styles.card}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={inter.className}>
-						Templates <span>-&gt;</span>
-					</h2>
-					<p className={inter.className}>Explore the Next.js 13 playground.</p>
-				</a>
-
-				<a
-					href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-					className={styles.card}
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={inter.className}>
-						Deploy <span>-&gt;</span>
-					</h2>
-					<p className={inter.className}>
-						Instantly deploy your Next.js site to a shareable URL with Vercel.
-					</p>
-				</a>
-			</div>
+			<div />
 		</main>
 	)
 }
