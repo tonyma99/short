@@ -1,3 +1,5 @@
+import { cache } from '@lib/utils/db'
+
 export class ClientDetails {
 	ip: string
 	country: string
@@ -22,31 +24,35 @@ export class ClientDetails {
 }
 
 export const safeBrowsingLookup = async (url: string) => {
+	const hostname = new URL(url).hostname
 	const api = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_API_KEY}`
-	const res = await fetch(api, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({
-			client: {
-				clientId: 'tonyma99/short',
-				clientVersion: '0.0.1'
-			},
-			threatInfo: {
-				threatTypes: [
-					'THREAT_TYPE_UNSPECIFIED',
-					'MALWARE',
-					'SOCIAL_ENGINEERING',
-					'UNWANTED_SOFTWARE',
-					'POTENTIALLY_HARMFUL_APPLICATION'
-				],
-				platformTypes: ['ANY_PLATFORM'],
-				threatEntryTypes: ['URL'],
-				threatEntries: [{ url }]
-			}
+	const result = await cache(hostname, async () => {
+		const res = await fetch(api, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				client: {
+					clientId: 'tonyma99/short',
+					clientVersion: '0.0.1'
+				},
+				threatInfo: {
+					threatTypes: [
+						'THREAT_TYPE_UNSPECIFIED',
+						'MALWARE',
+						'SOCIAL_ENGINEERING',
+						'UNWANTED_SOFTWARE',
+						'POTENTIALLY_HARMFUL_APPLICATION'
+					],
+					platformTypes: ['ANY_PLATFORM'],
+					threatEntryTypes: ['URL'],
+					threatEntries: [{ url: hostname }]
+				}
+			})
 		})
+		return await res.json()
 	})
 
-	const { matches } = await res.json()
+	const { matches } = result
 
 	return matches ? true : false
 }

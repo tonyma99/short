@@ -3,6 +3,7 @@ declare global {
 		interface ProcessEnv {
 			GOOGLE_API_KEY: string
 			MONGODB_URI: string
+			REDIS_URL: string
 		}
 	}
 }

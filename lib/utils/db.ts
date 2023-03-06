@@ -1,8 +1,25 @@
 import clientPromise from '@lib/utils/mongodb'
+import client from '@lib/utils/redis'
 import { ClientDetails } from '@lib/utils/helpers'
 import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
+
+export const cache = async (key: string, callback: Function) => {
+	if (!client.isReady) await client.connect()
+
+	const cachedResult = await client.get(key)
+
+	if (cachedResult) {
+		return JSON.parse(cachedResult)
+	} else {
+		const result = await callback()
+		if (result) {
+			await client.setEx(key, 600, JSON.stringify(result))
+			return result
+		}
+	}
+}
 
 export const Links = {
 	get: async (id: string) => {
