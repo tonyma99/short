@@ -1,10 +1,5 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
 import styles from './page.module.css'
 import { CreateLinkForm } from '@lib/components'
-
-const inter = Inter({ subsets: ['latin'] })
-const inter900 = Inter({ weight: '900', subsets: ['latin'] })
 
 export default function Home() {
 	return (
@@ -33,7 +28,7 @@ export default function Home() {
 				<CreateLinkForm />
 			</div>
 
-			<div />
+			<span></span>
 		</main>
 	)
 }
