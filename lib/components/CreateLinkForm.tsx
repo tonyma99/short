@@ -9,10 +9,12 @@ export default function CreateLinkForm() {
 	const [value, setValue] = useState('')
 	const [url, setUrl] = useState('')
 	const [error, setError] = useState('')
+	const [waiting, setWaiting] = useState(false)
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault()
 		const target = value
+		setWaiting(true)
 		setValue('')
 		setUrl('')
 		setError('')
@@ -24,6 +26,7 @@ export default function CreateLinkForm() {
 			const message = await response.text()
 			setError(message)
 		}
+		setWaiting(false)
 	}
 
 	return (
@@ -36,8 +39,9 @@ export default function CreateLinkForm() {
 					placeholder="https://google.com"
 					onChange={(e) => setValue(e.target.value)}
 					required
+					disabled={waiting}
 				/>
-				<input type="submit" hidden />
+				<input type="submit" disabled={waiting} hidden />
 			</form>
 			{url && (
 				<div className={styles.alert}>
