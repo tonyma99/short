@@ -5,10 +5,10 @@
 	border-radius: var(--border-radius);
 	display: flex;
 	flex-direction: column;
-	gap: 24px;
+	gap: 16px;
 	min-width: 256px;
 	max-width: 384px;
-	padding: 24px;
+	padding: 16px;
 	text-align: center;
 	z-index: 1;
 }
@@ -113,7 +113,7 @@
 	border: 1px solid rgba(var(--card-border-rgb), 0.15);
 	border-radius: var(--border-radius);
 	content: attr(data-tooltip);
-	padding: 12px 8px;
+	padding: 8px;
 	width: 256px;
 	z-index: 2;
 }
