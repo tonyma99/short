@@ -6,16 +6,35 @@ import { nanoid } from 'nanoid'
 const LINKS_COLLECTION = 'links'
 
 export const cache = async (key: string, callback: Function) => {
-	if (!client.isReady) await client.connect()
+	const _start = performance.now()
+
+	if (!client.isReady) {
+		await client.connect()
+		console.log(
+			`\x1b[41mredis\x1b[0m - \x1b[33mclient connected\x1b[0m in ${
+				(performance.now() - _start) | 0
+			}ms`
+		)
+	}
 
 	const cachedResult = await client.get(key)
 
 	if (cachedResult) {
+		console.log(
+			`\x1b[41mredis\x1b[0m - \x1b[32mcache hit\x1b[0m \x1b[2m${key}\x1b[0m in ${
+				(performance.now() - _start) | 0
+			}ms`
+		)
 		return JSON.parse(cachedResult)
 	} else {
 		const result = await callback()
 		if (result) {
 			await client.setEx(key, 600, JSON.stringify(result))
+			console.log(
+				`\x1b[41mredis\x1b[0m - \x1b[31mcache miss\x1b[0m \x1b[2m${key}\x1b[0m in ${
+					(performance.now() - _start) | 0
+				}ms`
+			)
 			return result
 		}
 	}
