@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
 
-export const cache = async (key: string, callback: Function) => {
+export const cache = async (key: string, callback: Function, timeout = 600) => {
 	const _start = performance.now()
 
 	if (!client.isReady) {
@@ -29,7 +29,7 @@ export const cache = async (key: string, callback: Function) => {
 	} else {
 		const result = await callback()
 		if (result) {
-			await client.setEx(key, 600, JSON.stringify(result))
+			await client.setEx(key, timeout, JSON.stringify(result))
 			console.log(
 				`\x1b[41mredis\x1b[0m - \x1b[31mcache miss\x1b[0m \x1b[2m${key}\x1b[0m in ${
 					(performance.now() - _start) | 0
@@ -45,9 +45,13 @@ export const Links = {
 		const db = (await clientPromise).db()
 		const links = db.collection(LINKS_COLLECTION)
 
-		const result = await cache(`links:${id}`, async () => {
-			return await links.findOne({ id })
-		})
+		const result = await cache(
+			`links:${id}`,
+			async () => {
+				return await links.findOne({ id })
+			},
+			3600
+		)
 
 		return result ? result.target : null
 	},
