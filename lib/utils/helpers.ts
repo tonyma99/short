@@ -27,7 +27,7 @@ export const safeBrowsingLookup = async (url: string) => {
 	const hostname = new URL(url).hostname
 	const api = `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${process.env.GOOGLE_API_KEY}`
 	const result = await cache(`safebrowsing:${hostname}`, async () => {
-		const res = await fetch(api, {
+		const response = await fetch(api, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -49,7 +49,8 @@ export const safeBrowsingLookup = async (url: string) => {
 				}
 			})
 		})
-		return await res.json()
+		const result = await response.json()
+		return result
 	})
 
 	const { matches } = result
