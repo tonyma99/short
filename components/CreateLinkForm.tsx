@@ -7,6 +7,7 @@ export default function CreateLinkForm() {
 	const [url, setUrl] = useState('')
 	const [error, setError] = useState('')
 	const [waiting, setWaiting] = useState(false)
+	const [copyButtonText, setCopyButtonText] = useState<'Copy' | 'Copied'>('Copy')
 
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault()
@@ -26,6 +27,14 @@ export default function CreateLinkForm() {
 		setWaiting(false)
 	}
 
+	const handleCopy = async () => {
+		navigator.clipboard.writeText(url)
+		setCopyButtonText('Copied')
+		setTimeout(() => {
+			setCopyButtonText('Copy')
+		}, 1000)
+	}
+
 	return (
 		<div className="w-full max-w-[480px]">
 			<form onSubmit={handleSubmit} noValidate>
@@ -42,7 +51,7 @@ export default function CreateLinkForm() {
 				<input type="submit" disabled={waiting} hidden />
 			</form>
 			{url && (
-				<div className="bg-gray-100 mt-4 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
+				<div className="bg-gray-100 mt-8 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
 					<a
 						className="text-blue-500 font-bold hover:text-blue-600 transition-all"
 						href={url}
@@ -50,7 +59,7 @@ export default function CreateLinkForm() {
 					>
 						{url}
 					</a>
-					<p className="mt-2">
+					<p className="my-4">
 						This link prompts the user to confirm the destination before proceeding. To remove this
 						prompt, please{' '}
 						<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
@@ -62,6 +71,7 @@ export default function CreateLinkForm() {
 						</a>
 						.
 					</p>
+					<Button text={copyButtonText} handler={handleCopy} />
 				</div>
 			)}
 			{error && (
