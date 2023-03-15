@@ -22,7 +22,7 @@ export default async function Redirect({ params }: { params: any }) {
 
 	const safeBrowsingResult = {
 		match: await safeBrowsingLookup(url),
-		timestamp: new Date().toLocaleTimeString()
+		timestamp: new Date().toISOString()
 	}
 
 	return (
