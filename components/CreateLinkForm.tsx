@@ -37,7 +37,7 @@ export default function CreateLinkForm() {
 					onChange={(e: any) => setValue(e.target.value)}
 					required
 					disabled={waiting}
-					button="Submit"
+					button="Shorten"
 				/>
 				<input type="submit" disabled={waiting} hidden />
 			</form>
