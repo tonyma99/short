@@ -2,7 +2,13 @@
 import { Button, Modal } from '@components'
 import { useRouter } from 'next/navigation'
 
-export default function RedirectModal({ url }: { url: string }) {
+export default function RedirectModal({
+	url,
+	safeBrowsingResult
+}: {
+	url: string
+	safeBrowsingResult: any
+}) {
 	const descriptionText =
 		'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams. This warning appears when the link is created by an unauthenticated user.'
 
@@ -23,6 +29,12 @@ export default function RedirectModal({ url }: { url: string }) {
 				</div>
 				<div className="px-4">
 					<p className="text-sm">{descriptionText}</p>
+				</div>
+				<div className="text-xs">
+					<span className={`block ${safeBrowsingResult.match ? 'text-red-500' : 'text-green-600'}`}>
+						{safeBrowsingResult.match ? '❌ This site is unsafe' : '✅ No unsafe content found'}
+					</span>
+					<span className="block text-gray-600">Checked at {safeBrowsingResult.timestamp}</span>
 				</div>
 				<div>
 					<Button text="Continue" handler={handleClick} />
