@@ -20,7 +20,7 @@ export default async function Redirect({ params }: { params: any }) {
 	if (!url) throw redirect('/')
 
 	return (
-		<div className="flex items-center justify-center h-screen w-screen">
+		<div className="flex items-center justify-center h-screen w-screen px-4">
 			<RedirectModal url={url} />
 		</div>
 	)
