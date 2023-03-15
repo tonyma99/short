@@ -2,10 +2,10 @@
 import { Button, Modal } from '@components'
 import { useRouter } from 'next/navigation'
 
-const descriptionText =
-	'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams. This warning appears when the link is created by an unauthenticated user.'
-
 export default function RedirectModal({ url }: { url: string }) {
+	const descriptionText =
+		'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams. This warning appears when the link is created by an unauthenticated user.'
+
 	const router = useRouter()
 
 	const handleClick = () => {
@@ -24,7 +24,9 @@ export default function RedirectModal({ url }: { url: string }) {
 				<div className="px-4">
 					<span className="text-sm">{descriptionText}</span>
 				</div>
-				<Button text="Continue" handler={handleClick} />
+				<div>
+					<Button text="Continue" handler={handleClick} />
+				</div>
 			</div>
 		</Modal>
 	)
