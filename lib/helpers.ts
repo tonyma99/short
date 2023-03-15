@@ -1,4 +1,4 @@
-import { cache } from '@lib/utils/db'
+import { cache } from '@lib/db'
 
 export class ClientDetails {
 	ip: string

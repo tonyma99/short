@@ -1,5 +1,5 @@
-import { Links } from '@lib/utils/db'
-import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/utils/helpers'
+import { Links } from '@lib/db'
+import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/helpers'
 
 export async function POST(request: Request) {
 	try {

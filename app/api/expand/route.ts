@@ -1,4 +1,4 @@
-import { Links } from '@lib/utils/db'
+import { Links } from '@lib/db'
 
 export async function GET(request: Request) {
 	try {

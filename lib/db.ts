@@ -1,6 +1,6 @@
-import clientPromise from '@lib/utils/mongodb'
-import client from '@lib/utils/redis'
-import { ClientDetails } from '@lib/utils/helpers'
+import clientPromise from '@lib/mongodb'
+import client from '@lib/redis'
+import { ClientDetails } from '@lib/helpers'
 import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
