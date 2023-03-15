@@ -1,5 +1,5 @@
 'use client'
-import { HTMLAttributes, MouseEventHandler } from 'react'
+import { MouseEventHandler } from 'react'
 
 type Props = {
 	className?: string
