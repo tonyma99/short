@@ -14,10 +14,10 @@ export default function RedirectModal({ url }: { url: string }) {
 
 	return (
 		<Modal>
-			<div className="flex flex-col gap-4 text-center">
+			<div className="flex flex-col gap-4 text-center text-sm">
 				<div>
-					<h3 className="font-bold">You are being redirected to</h3>
-					<a className="text-blue-500 hover:text-blue-600 transition-all text-sm" href={url}>
+					<h3 className="font-bold text-base">You are being redirected to</h3>
+					<a className="text-blue-500 hover:text-blue-600 transition-all" href={url}>
 						{url}
 					</a>
 				</div>
