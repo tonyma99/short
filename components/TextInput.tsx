@@ -5,7 +5,7 @@ export default function TextInput(props: any) {
 	return (
 		<div className="flex flex-shrink rounded-md shadow-md">
 			<input
-				className={`bg-white grow p-2 rounded-md ${button && 'rounded-r-none'}`}
+				className={`bg-white grow p-2.5 rounded-md ${button && 'rounded-r-none'}`}
 				{...attributes}
 			/>
 			{button && <Button className="rounded-l-none" text={button} />}
