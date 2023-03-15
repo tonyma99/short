@@ -48,13 +48,7 @@ export const Links = {
 		const db = (await clientPromise).db()
 		const links = db.collection(LINKS_COLLECTION)
 
-		const result = await cache(
-			`links:${id}`,
-			async () => {
-				return await links.findOne({ id })
-			},
-			3600
-		)
+		const result = await links.findOne({ id })
 
 		return result ? result.target : null
 	},
