@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 		const target = searchParams.get('target') as string
 
 		if (!target) {
-			return new Response("Missing parameter 'target'.", { status: 400 })
+			return new Response('No URL was specified.', { status: 400 })
 		}
 
 		const url = completeUrl(target)

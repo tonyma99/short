@@ -51,7 +51,7 @@ export default function CreateLinkForm() {
 				<input type="submit" disabled={waiting} hidden />
 			</form>
 			{url && (
-				<div className="bg-gray-100 mt-8 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
+				<div className="bg-gray-100 mt-6 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
 					<a
 						className="text-blue-500 font-bold hover:text-blue-600 transition-all"
 						href={url}
@@ -75,7 +75,7 @@ export default function CreateLinkForm() {
 				</div>
 			)}
 			{error && (
-				<div className="bg-red-100 mt-4 rounded-md p-3 text-center text-sm w-fit mx-auto">
+				<div className="bg-red-100 mt-6 rounded-md p-3 text-center text-sm w-fit mx-auto">
 					<p>{error}</p>
 				</div>
 			)}
