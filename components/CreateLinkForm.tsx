@@ -1,9 +1,6 @@
 'use client'
+import { Button, TextInput } from '@components'
 import { FormEvent, useState } from 'react'
-import styles from './CreateLinkForm.module.css'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export default function CreateLinkForm() {
 	const [value, setValue] = useState('')
@@ -30,32 +27,37 @@ export default function CreateLinkForm() {
 	}
 
 	return (
-		<div>
-			<form className={styles.form} onSubmit={handleSubmit} noValidate>
-				<input
+		<div className="w-full max-w-[480px]">
+			<form onSubmit={handleSubmit} noValidate>
+				<TextInput
 					value={value}
 					name="url"
 					type="url"
 					placeholder="https://google.com"
-					onChange={(e) => setValue(e.target.value)}
+					onChange={(e: any) => setValue(e.target.value)}
 					required
 					disabled={waiting}
+					button="Submit"
 				/>
 				<input type="submit" disabled={waiting} hidden />
 			</form>
 			{url && (
-				<div className={styles.alert}>
-					<a className={[styles.link, styles.mono].join(' ')} href={url} target="_blank">
+				<div className="bg-gray-100 mt-4 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
+					<a
+						className="text-blue-500 font-bold hover:text-blue-600 transition-all"
+						href={url}
+						target="_blank"
+					>
 						{url}
 					</a>
-					<p className={[styles.noUserAlert, inter.className].join(' ')}>
+					<p className="mt-2">
 						This link prompts the user to confirm the destination before proceeding. To remove this
 						prompt, please{' '}
-						<a className={styles.link} href="/">
+						<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
 							login
 						</a>{' '}
 						or{' '}
-						<a className={styles.link} href="/">
+						<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
 							create an account
 						</a>
 						.
@@ -63,8 +65,8 @@ export default function CreateLinkForm() {
 				</div>
 			)}
 			{error && (
-				<div className={[styles.alert, styles.errorAlert, inter.className].join(' ')}>
-					<p className={styles.mono}>{error}</p>
+				<div className="bg-red-100 mt-4 rounded-md p-3 text-center text-sm w-fit mx-auto">
+					<p>{error}</p>
 				</div>
 			)}
 		</div>

@@ -1,14 +1,21 @@
 import './globals.css'
 import { AnalyticsWrapper } from '@components'
+import { Inter } from 'next/font/google'
 
 export const metadata = {
 	title: 'Short',
 	description: 'A simple URL shortener.'
 }
 
+const inter = Inter({
+	variable: '--font-inter',
+	display: 'swap',
+	subsets: ['latin']
+})
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" className={`${inter.variable} bg-gray-50`}>
 			<body>{children}</body>
 			<AnalyticsWrapper />
 		</html>
