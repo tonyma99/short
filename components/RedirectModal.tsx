@@ -1,14 +1,9 @@
 'use client'
-import styles from './RedirectModal.module.css'
+import { Button, Modal } from '@components'
 import { useRouter } from 'next/navigation'
-import { Inter } from 'next/font/google'
-import Image from 'next/image'
-import Link from 'next/link'
 
-const inter = Inter({ subsets: ['latin'] })
 const descriptionText =
-	'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams.'
-const tooltipText = 'This warning appears when the link is created by an unauthenticated user.'
+	'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams. This warning appears when the link is created by an unauthenticated user.'
 
 export default function RedirectModal({ url }: { url: string }) {
 	const router = useRouter()
@@ -16,25 +11,21 @@ export default function RedirectModal({ url }: { url: string }) {
 	const handleClick = () => {
 		router.push(url)
 	}
+
 	return (
-		<div className={styles.center}>
-			<div className={[styles.modal, inter.className].join(' ')}>
-				<div className={styles.title}>
-					<h3 className={styles.heading}>You are being redirected to</h3>
-					<Link href={url} className={styles.subheading}>
+		<Modal>
+			<div className="flex flex-col gap-4 text-center">
+				<div>
+					<h3 className="font-bold text-lg">You are being redirected to</h3>
+					<a className="text-blue-500 hover:text-blue-600 transition-all" href={url}>
 						{url}
-					</Link>
+					</a>
 				</div>
-				<div className={styles.description}>
-					<span className={styles.descriptionText}>{descriptionText}</span>
-					<span className={styles.tooltip} data-tooltip={tooltipText}>
-						<Image src="/info.svg" alt="Information icon" width={20} height={20} priority />
-					</span>
+				<div className="px-4">
+					<span className="text-sm">{descriptionText}</span>
 				</div>
-				<button onClick={handleClick} className={styles.button}>
-					Continue
-				</button>
+				<Button text="Continue" handler={handleClick} />
 			</div>
-		</div>
+		</Modal>
 	)
 }

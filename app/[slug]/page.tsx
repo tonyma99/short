@@ -1,6 +1,5 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import styles from './page.module.css'
 import { RedirectModal } from '@components'
 
 const getUrl = async (id: string) => {
@@ -21,7 +20,7 @@ export default async function Redirect({ params }: { params: any }) {
 	if (!url) throw redirect('/')
 
 	return (
-		<div className={styles.modalContainer}>
+		<div className="flex items-center justify-center h-screen w-screen">
 			<RedirectModal url={url} />
 		</div>
 	)
