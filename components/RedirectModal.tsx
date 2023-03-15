@@ -22,7 +22,7 @@ export default function RedirectModal({ url }: { url: string }) {
 					</a>
 				</div>
 				<div className="px-4">
-					<span className="text-sm">{descriptionText}</span>
+					<p className="text-sm">{descriptionText}</p>
 				</div>
 				<div>
 					<Button text="Continue" handler={handleClick} />
