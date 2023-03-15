@@ -1,5 +1,5 @@
 import './globals.css'
-import { AnalyticsWrapper } from '@lib/components'
+import { AnalyticsWrapper } from '@components'
 
 export const metadata = {
 	title: 'Short',

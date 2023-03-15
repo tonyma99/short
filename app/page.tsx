@@ -1,5 +1,5 @@
 import styles from './page.module.css'
-import { CreateLinkForm } from '@lib/components'
+import { CreateLinkForm } from '@components'
 
 export default function Home() {
 	return (

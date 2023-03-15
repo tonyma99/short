@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import styles from './page.module.css'
-import { RedirectModal } from '@lib/components'
+import { RedirectModal } from '@components'
 
 const getUrl = async (id: string) => {
 	const headersList = headers()
