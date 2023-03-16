@@ -6,7 +6,7 @@ import Image from 'next/image'
 export default function LoginButton() {
 	return (
 		<Button
-			className="bg-black hover:bg-gray-800 text-sm text-white"
+			className="!bg-black hover:!bg-gray-800 text-sm text-white"
 			text="Login with GitHub"
 			icon={<Image src="/github.svg" alt="GitHub logo" width={16} height={16} />}
 			handler={() => signIn('github')}
