@@ -1,6 +1,7 @@
 import { Links } from '@lib/db'
 import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/helpers'
 import { getServerSession } from 'next-auth/next'
+import { authOptions } from 'pages/api/auth/[...nextauth]'
 
 export async function POST(request: Request) {
 	try {
@@ -9,7 +10,7 @@ export async function POST(request: Request) {
 		const host = headers.get('host')
 		const target = searchParams.get('target') as string
 
-		const session = await getServerSession()
+		const session = await getServerSession(authOptions)
 
 		if (!target) {
 			return new Response('No URL was specified.', { status: 400 })
