@@ -1,7 +1,7 @@
 import Button from './Button'
 
 export default function TextInput(props: any) {
-	const { button, ...attributes } = props
+	const { button, disabled, ...attributes } = props
 	return (
 		<div className="flex flex-shrink rounded-md shadow-md">
 			<input
@@ -9,8 +9,9 @@ export default function TextInput(props: any) {
 					button && 'rounded-r-none'
 				}`}
 				{...attributes}
+				disabled={disabled}
 			/>
-			{button && <Button className="rounded-l-none" text={button} />}
+			{button && <Button className="rounded-l-none" text={button} disabled={disabled} />}
 		</div>
 	)
 }

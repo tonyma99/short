@@ -6,13 +6,15 @@ type Props = {
 	text: string
 	icon?: ReactElement
 	handler?: Function
+	disabled?: boolean
 }
 
-export default function Button({ className, text, icon, handler }: Props) {
+export default function Button({ className, text, icon, handler, disabled }: Props) {
 	return (
 		<button
-			className={`bg-gray-200 p-3 inline-flex items-center gap-2 rounded-md hover:bg-gray-300 transition-colors font-bold leading-none ${className}`}
+			className={`bg-gray-200 p-3 inline-flex items-center gap-2 rounded-md hover:bg-gray-300 transition-colors font-bold leading-none disabled:opacity-50 disabled:pointer-events-none ${className}`}
 			onClick={handler as MouseEventHandler}
+			disabled={disabled}
 		>
 			{icon}
 			{text}
