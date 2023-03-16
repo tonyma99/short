@@ -46,7 +46,7 @@ export default function RedirectModal({
 							>
 								{safeBrowsingResult.match ? '❌ This site is unsafe' : '✅ No unsafe content found'}
 							</span>
-							{time && <span className="block text-gray-600">Checked at {time}</span>}
+							<span className="block text-gray-600">Checked at {time}</span>
 						</div>
 						<div>
 							<Button text="Continue" handler={handleClick} />
