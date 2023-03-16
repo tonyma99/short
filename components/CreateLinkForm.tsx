@@ -1,6 +1,7 @@
 'use client'
 import { Button, TextInput } from '@components'
 import { FormEvent, useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 export default function CreateLinkForm() {
 	const [value, setValue] = useState('')
@@ -9,6 +10,8 @@ export default function CreateLinkForm() {
 	const [waiting, setWaiting] = useState(false)
 	const [copyButtonText, setCopyButtonText] = useState<'Copy' | 'Copied'>('Copy')
 
+	const { data: session } = useSession()
+
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault()
 		const target = value
@@ -16,7 +19,11 @@ export default function CreateLinkForm() {
 		setValue('')
 		setUrl('')
 		setError('')
-		const response = await fetch(`/api/shorten?target=${target}`, { method: 'POST' })
+
+		const response = await fetch(`/api/shorten?target=${target}&user=${session?.user?.email}`, {
+			method: 'POST'
+		})
+
 		if (response.status === 200) {
 			const { url: _url } = await response.json()
 			setUrl(_url)

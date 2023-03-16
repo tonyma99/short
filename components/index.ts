@@ -1,4 +1,5 @@
 import AnalyticsWrapper from './AnalyticsWrapper'
+import AuthContext from './AuthContext'
 import Button from './Button'
 import CreateLinkForm from './CreateLinkForm'
 import GitHubLoginButton from './GitHubLoginButton'
@@ -9,6 +10,7 @@ import TextInput from './TextInput'
 
 export {
 	AnalyticsWrapper,
+	AuthContext,
 	CreateLinkForm,
 	Button,
 	GitHubLoginButton,

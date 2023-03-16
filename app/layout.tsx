@@ -1,6 +1,7 @@
 import './globals.css'
 import { AnalyticsWrapper } from '@components'
 import { Inter } from 'next/font/google'
+import { AuthContext } from '@components'
 
 export const metadata = {
 	title: 'Short',
@@ -16,7 +17,9 @@ const inter = Inter({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en" className={`${inter.variable} bg-gray-50`}>
-			<body>{children}</body>
+			<AuthContext>
+				<body>{children}</body>
+			</AuthContext>
 			<AnalyticsWrapper />
 		</html>
 	)

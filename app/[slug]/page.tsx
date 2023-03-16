@@ -16,9 +16,10 @@ const getUrl = async (id: string) => {
 
 export default async function Redirect({ params }: { params: any }) {
 	const { slug: id } = params
-	const url = await getUrl(id)
+	const { target: url, user } = await getUrl(id)
 
 	if (!url) throw redirect('/')
+	if (user) throw redirect(url)
 
 	const safeBrowsingResult = {
 		match: await safeBrowsingLookup(url),

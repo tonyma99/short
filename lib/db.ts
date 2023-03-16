@@ -10,34 +10,16 @@ export const cache = async (key: string, callback: Function, timeout = 600) => {
 
 	if (!client.isReady) {
 		await client.connect()
-		process.env.NODE_ENV === 'development' &&
-			console.log(
-				`\x1b[41mredis\x1b[0m - \x1b[33mclient connected\x1b[0m in ${
-					(performance.now() - _start) | 0
-				}ms`
-			)
 	}
 
 	const cachedResult = await client.get(key)
 
 	if (cachedResult) {
-		process.env.NODE_ENV === 'development' &&
-			console.log(
-				`\x1b[41mredis\x1b[0m - \x1b[32mcache hit\x1b[0m \x1b[2m${key}\x1b[0m in ${
-					(performance.now() - _start) | 0
-				}ms`
-			)
 		return JSON.parse(cachedResult)
 	} else {
 		const result = await callback()
 		if (result) {
 			await client.setEx(key, timeout, JSON.stringify(result))
-			process.env.NODE_ENV === 'development' &&
-				console.log(
-					`\x1b[41mredis\x1b[0m - \x1b[31mcache miss\x1b[0m \x1b[2m${key}\x1b[0m in ${
-						(performance.now() - _start) | 0
-					}ms`
-				)
 			return result
 		}
 	}
@@ -50,10 +32,10 @@ export const Links = {
 
 		const result = await links.findOne({ id })
 
-		return result ? result.target : null
+		return result
 	},
 
-	create: async (url: string, headers?: Headers) => {
+	create: async (url: string, options: { headers?: Headers; user?: string | null }) => {
 		const db = (await clientPromise).db()
 		const links = db.collection(LINKS_COLLECTION)
 
@@ -62,7 +44,9 @@ export const Links = {
 			id,
 			target: url,
 			date: new Date(),
-			...(process.env.VERCEL === '1' && headers && { client: new ClientDetails(headers).get() })
+			...(options.user && { user: options.user }),
+			...(process.env.VERCEL === '1' &&
+				options.headers && { client: new ClientDetails(options.headers).get() })
 		}
 
 		const result = await links.insertOne(link)
