@@ -12,6 +12,7 @@ const getUrl = async (id: string) => {
 		const { url } = await response.json()
 		return url
 	}
+	return {}
 }
 
 export default async function Redirect({ params }: { params: any }) {

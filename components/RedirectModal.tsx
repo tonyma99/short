@@ -33,7 +33,7 @@ export default function RedirectModal({
 					<div className="flex flex-col gap-4 text-center text-sm">
 						<div>
 							<h3 className="font-bold text-base">You are being redirected to</h3>
-							<a className="text-blue-500 hover:text-blue-600 transition-all" href={url}>
+							<a className="text-blue-500 hover:text-blue-600 transition-colors" href={url}>
 								{url}
 							</a>
 						</div>
