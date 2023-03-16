@@ -37,7 +37,7 @@ export default function RedirectModal({
 								{url}
 							</a>
 						</div>
-						<div className="px-4">
+						<div>
 							<p className="text-sm">{descriptionText}</p>
 						</div>
 						<div className="text-xs">
