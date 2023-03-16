@@ -60,25 +60,27 @@ export default function CreateLinkForm() {
 			{url && (
 				<div className="bg-gray-100 mt-6 rounded-md p-4 text-center text-sm max-w-[320px]	mx-auto">
 					<a
-						className="text-blue-500 font-bold hover:text-blue-600 transition-all"
+						className="text-blue-500 font-bold hover:text-blue-600 transition-colors"
 						href={url}
 						target="_blank"
 					>
 						{url}
 					</a>
-					<p className="my-4">
-						This link prompts the user to confirm the destination before proceeding. To remove this
-						prompt, please{' '}
-						<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
-							login
-						</a>{' '}
-						or{' '}
-						<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
-							create an account
-						</a>
-						.
-					</p>
-					<Button text={copyButtonText} handler={handleCopy} />
+					{!session && (
+						<p className="mt-4">
+							This link prompts the user to confirm the destination before proceeding. To remove
+							this prompt, please{' '}
+							<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
+								login
+							</a>{' '}
+							or{' '}
+							<a className="text-blue-500 hover:text-blue-600 animate-all" href="/">
+								create an account
+							</a>
+							.
+						</p>
+					)}
+					<Button className="mt-4" text={copyButtonText} handler={handleCopy} />
 				</div>
 			)}
 			{error && (
