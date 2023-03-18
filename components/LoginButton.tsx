@@ -1,7 +1,9 @@
 'use client'
 import { Button } from '@components'
-import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function LoginButton() {
-	return <Button className="text-sm" text="Login" handler={signIn} />
+	const router = useRouter()
+
+	return <Button className="text-sm" text="Login" handler={() => router.push('/login')} />
 }
