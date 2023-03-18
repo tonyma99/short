@@ -1,4 +1,4 @@
-import { CreateLinkForm, GitHubLoginButton, LogoutButton } from '@components'
+import { CreateLinkForm, LoginButton, LogoutButton } from '@components'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from 'pages/api/auth/[...nextauth]'
 
@@ -11,9 +11,11 @@ export default async function Home() {
 			<CreateLinkForm />
 			<div className="absolute right-4 top-4">
 				{!session ? (
-					<GitHubLoginButton />
+					<div>
+						<LoginButton />
+					</div>
 				) : (
-					<div className="">
+					<div>
 						<pre className="text-sm mr-2 inline-block">
 							{session.user?.name}&lt;{session.user?.email}&gt;
 						</pre>
