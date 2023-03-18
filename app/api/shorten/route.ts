@@ -1,4 +1,4 @@
-import { Links } from '@lib/db'
+import { Links, Users } from '@lib/db'
 import { completeUrl, safeBrowsingLookup, validateUrl } from '@lib/helpers'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from 'pages/api/auth/[...nextauth]'
@@ -27,6 +27,7 @@ export async function POST(request: Request) {
 		}
 
 		const id = await Links.create(url, { headers, user: session?.user?.email })
+		session?.user?.email && id && (await Users.link(session.user?.email, id))
 
 		return new Response(
 			JSON.stringify({

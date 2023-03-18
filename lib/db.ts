@@ -4,10 +4,9 @@ import { ClientDetails } from '@lib/helpers'
 import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
+const USERS_COLLECTION = 'users'
 
 export const cache = async (key: string, callback: Function, timeout = 600) => {
-	const _start = performance.now()
-
 	if (!client.isReady) {
 		await client.connect()
 	}
@@ -68,5 +67,43 @@ export const Links = {
 				}
 			}
 		)
+	}
+}
+
+export const Users = {
+	get: async (email: string) => {
+		const db = (await clientPromise).db()
+		const users = db.collection(USERS_COLLECTION)
+
+		const result = await users.findOne({ email })
+
+		return result
+	},
+
+	create: async (email: string) => {
+		const db = (await clientPromise).db()
+		const users = db.collection(USERS_COLLECTION)
+
+		const user = {
+			email,
+			links: [],
+			createdAt: new Date()
+		}
+
+		const result = await users.insertOne(user)
+	},
+
+	update: async (email: string) => {
+		const db = (await clientPromise).db()
+		const users = db.collection(USERS_COLLECTION)
+
+		await users.updateOne({ email }, { $set: { lastLogin: new Date() } })
+	},
+
+	link: async (email: string, id: string) => {
+		const db = (await clientPromise).db()
+		const users = db.collection(USERS_COLLECTION)
+
+		await users.updateOne({ email }, { $push: { links: id } })
 	}
 }
