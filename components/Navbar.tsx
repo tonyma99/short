@@ -2,6 +2,7 @@
 import { Button } from '@components'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import Link from 'next/link'
 
 type Props = {
 	authenticated: boolean
@@ -12,9 +13,9 @@ export default function Navbar({ authenticated }: Props) {
 
 	return (
 		<div className="flex justify-between w-full p-2">
-			<a href="/" className="text-3xl">
+			<Link href="/" className="text-3xl">
 				🔗
-			</a>
+			</Link>
 			<div className="space-x-2">
 				{authenticated ? (
 					<>
