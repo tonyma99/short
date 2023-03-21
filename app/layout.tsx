@@ -24,7 +24,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 					<nav>
 						<Navbar authenticated={session ? true : false} />
 					</nav>
-					<main className="flex-grow">{children}</main>
+					<main className="flex flex-col flex-grow">{children}</main>
 					<footer>
 						<Footer />
 					</footer>

@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export default function LoginModal() {
 	return (
-		<Modal>
+		<Modal className="!bg-transparent">
 			<Button
 				className="!bg-black hover:!bg-gray-800 text-sm text-white"
 				text="Login with GitHub"

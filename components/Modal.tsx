@@ -1,5 +1,9 @@
 import { PropsWithChildren } from 'react'
 
-export default function Modal({ children }: PropsWithChildren) {
-	return <div className="bg-gray-100 p-4 rounded-md max-w-[360px]">{children}</div>
+type Props = {
+	className?: string
+}
+
+export default function Modal({ children, className }: PropsWithChildren<Props>) {
+	return <div className={`bg-gray-100 p-4 rounded-md max-w-[360px] ${className}`}>{children}</div>
 }
