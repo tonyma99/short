@@ -7,11 +7,11 @@ type Props = {
 	authenticated: boolean
 }
 
-export default function Header({ authenticated }: Props) {
+export default function Navbar({ authenticated }: Props) {
 	const router = useRouter()
 
 	return (
-		<header className="flex justify-between w-full p-2">
+		<div className="flex justify-between w-full p-2">
 			<a href="/" className="text-3xl">
 				🔗
 			</a>
@@ -25,6 +25,6 @@ export default function Header({ authenticated }: Props) {
 					<Button className="text-sm" text="Login" handler={() => router.push('/login')} />
 				)}
 			</div>
-		</header>
+		</div>
 	)
 }

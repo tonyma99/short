@@ -1,7 +1,7 @@
 import './globals.css'
-import { AnalyticsWrapper } from '@components'
+import { AnalyticsWrapper, AuthContext, Footer, Navbar } from '@components'
 import { Inter } from 'next/font/google'
-import { AuthContext } from '@components'
+import { getServerSession } from 'next-auth'
 
 export const metadata = {
 	title: 'Short',
@@ -14,11 +14,21 @@ const inter = Inter({
 	subsets: ['latin']
 })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+	const session = await getServerSession()
+
 	return (
 		<html lang="en" className={`${inter.variable} bg-gray-50`}>
 			<AuthContext>
-				<body>{children}</body>
+				<body className="flex flex-col min-h-screen">
+					<nav>
+						<Navbar authenticated={session ? true : false} />
+					</nav>
+					<main className="flex-grow">{children}</main>
+					<footer>
+						<Footer />
+					</footer>
+				</body>
 			</AuthContext>
 			<AnalyticsWrapper />
 		</html>

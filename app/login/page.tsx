@@ -1,4 +1,4 @@
-import { GitHubLoginButton, Layout } from '@components'
+import { LoginModal } from '@components'
 import { getServerSession } from 'next-auth/next'
 import { redirect } from 'next/navigation'
 
@@ -8,11 +8,8 @@ export default async function Login() {
 	if (session) throw redirect('/')
 
 	return (
-		/* @ts-expect-error Async Server Component */
-		<Layout>
-			<div className="flex flex-col w-screen mt-[33vh] items-center">
-				<GitHubLoginButton />
-			</div>
-		</Layout>
+		<div className="flex flex-col w-screen mt-[33vh] items-center">
+			<LoginModal />
+		</div>
 	)
 }
