@@ -10,7 +10,7 @@ export default async function Login() {
 	return (
 		/* @ts-expect-error Async Server Component */
 		<Layout>
-			<div className="flex h-screen w-screen justify-center items-center">
+			<div className="flex flex-col w-screen mt-[33vh] items-center">
 				<GitHubLoginButton />
 			</div>
 		</Layout>

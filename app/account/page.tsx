@@ -22,9 +22,7 @@ export default async function AccountPage() {
 	return (
 		/* @ts-expect-error Async Server Component */
 		<Layout>
-			<div className="flex flex-col flex-grow items-center justify-center text-center text-4xl">
-				🚧
-			</div>
+			<div className="flex flex-col flex-grow items-center text-center text-4xl mt-[33vh]">🚧</div>
 		</Layout>
 	)
 }
