@@ -16,6 +16,6 @@ export default async function AccountPage() {
 	if (!user?.admin) throw redirect('/')
 
 	return (
-		<div className="flex flex-col flex-grow items-center text-center text-4xl mt-[33vh]">🚧</div>
+		<div className="flex flex-col flex-grow items-center text-center text-4xl mt-[33vh]">🚨</div>
 	)
 }
