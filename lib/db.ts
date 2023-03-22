@@ -34,7 +34,7 @@ export const Links = {
 		return result
 	},
 
-	create: async (url: string, options: { headers?: Headers; user?: string | null }) => {
+	create: async (url: string, options?: { headers?: Headers; user?: string | null }) => {
 		const db = (await clientPromise).db()
 		const links = db.collection(LINKS_COLLECTION)
 
@@ -43,8 +43,9 @@ export const Links = {
 			id,
 			target: url,
 			date: new Date(),
-			...(options.user && { user: options.user }),
+			...(options && options.user && { user: options.user }),
 			...(process.env.VERCEL === '1' &&
+				options &&
 				options.headers && { client: new ClientDetails(options.headers).get() })
 		}
 
@@ -53,7 +54,7 @@ export const Links = {
 		return result.insertedId ? id : null
 	},
 
-	update: async (id: string) => {
+	update: async (id: string, options?: { headers?: Headers }) => {
 		const db = (await clientPromise).db()
 		const links = db.collection(LINKS_COLLECTION)
 
@@ -62,7 +63,10 @@ export const Links = {
 			{
 				$push: {
 					clicks: {
-						date: new Date()
+						date: new Date(),
+						...(process.env.VERCEL === '1' &&
+							options &&
+							options.headers && { client: new ClientDetails(options.headers).get() })
 					}
 				}
 			}
@@ -80,17 +84,17 @@ export const Users = {
 		return result
 	},
 
-	create: async (email: string) => {
+	create: async (user: { email: string; name: string; oauth: string }) => {
 		const db = (await clientPromise).db()
 		const users = db.collection(USERS_COLLECTION)
 
-		const user = {
-			email,
+		const result = await users.insertOne({
+			...user,
+			oauth: [user.oauth],
 			links: [],
-			createdAt: new Date()
-		}
-
-		const result = await users.insertOne(user)
+			createdAt: new Date(),
+			lastLogin: new Date()
+		})
 	},
 
 	update: async (email: string) => {

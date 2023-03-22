@@ -13,13 +13,17 @@ export const authOptions = {
 		signIn: '/login'
 	},
 	callbacks: {
-		async signIn({ user: _user }: any) {
-			const user = await Users.get(_user.email)
+		async signIn({ user, account }: any) {
+			const _user = await Users.get(user.email)
 
-			if (user) {
-				await Users.update(_user.email)
+			if (_user) {
+				await Users.update(user.email)
 			} else {
-				await Users.create(_user.email)
+				await Users.create({
+					email: user.email,
+					name: user.name,
+					oauth: account.provider
+				})
 			}
 
 			return true
