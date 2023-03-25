@@ -28,7 +28,7 @@ export default async function Redirect({ params }: { params: any }) {
 	}
 
 	return (
-		<div className="flex items-center justify-center h-screen w-screen px-4">
+		<div className="flex flex-1 flex-col items-center justify-center w-screen px-4">
 			<RedirectModal url={url} safeBrowsingResult={safeBrowsingResult} />
 		</div>
 	)
