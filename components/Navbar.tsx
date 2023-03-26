@@ -24,7 +24,6 @@ export default function Navbar({ authenticated }: Props) {
 						<span className="font-mono text-sm hidden md:inline-block text-gray-600">
 							{session?.user && `${session?.user?.name}<${session?.user?.email}>`}
 						</span>
-						<Button className="text-sm" text="Account" handler={() => router.push('/account')} />
 						<Button className="text-sm" text="Logout" handler={signOut} />
 					</>
 				) : (
