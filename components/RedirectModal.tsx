@@ -24,7 +24,7 @@ export default function RedirectModal({
 			if (countdown > 0) {
 				setCountdown(countdown - 1)
 			} else {
-				router.push(url)
+				if (!safeBrowsingResult.match) router.push(url)
 			}
 		}, 1000);
 	}, [countdown])
@@ -59,9 +59,10 @@ export default function RedirectModal({
 								{safeBrowsingResult.match ? '❌ This site is unsafe' : '✅ No unsafe content found'}
 							</span>
 							<span className="block text-gray-600">Checked at {timestamp}</span>
+							<span className='block text-gray-400'>with Google Safe Browsing API</span>
 						</div>
 						<div>
-							<Button text={`Continue (${countdown})`} handler={handleClick} />
+							<Button text={`Continue ${!safeBrowsingResult.match ? '(' + countdown + ')' : ''}`} handler={handleClick} />
 						</div>
 					</div>
 				</Modal>
