@@ -11,11 +11,23 @@ export default function RedirectModal({
 	safeBrowsingResult: any
 }) {
 	const [loaded, setLoaded] = useState(false)
-	const [time, setTime] = useState('')
+	const [timestamp, setTimestamp] = useState('')
+	const [countdown, setCountdown] = useState(5)
+
 	useEffect(() => {
-		setTime(new Date(safeBrowsingResult.timestamp).toLocaleTimeString())
+		setTimestamp(new Date(safeBrowsingResult.timestamp).toLocaleTimeString())
 		setLoaded(true)
 	}, [safeBrowsingResult])
+
+	useEffect(() => {
+		let timer = setTimeout(() => {
+			if (countdown > 0) {
+				setCountdown(countdown - 1)
+			} else {
+				router.push(url)
+			}
+		}, 1000);
+	}, [countdown])
 
 	const descriptionText =
 		'This redirect may potentially be harmful. Continue only if you trust the source to avoid malware, viruses, or phishing scams. This warning appears when the link is created by an unauthenticated user.'
@@ -46,10 +58,10 @@ export default function RedirectModal({
 							>
 								{safeBrowsingResult.match ? '❌ This site is unsafe' : '✅ No unsafe content found'}
 							</span>
-							<span className="block text-gray-600">Checked at {time}</span>
+							<span className="block text-gray-600">Checked at {timestamp}</span>
 						</div>
 						<div>
-							<Button text="Continue" handler={handleClick} />
+							<Button text={`Continue (${countdown})`} handler={handleClick} />
 						</div>
 					</div>
 				</Modal>
