@@ -1,26 +1,28 @@
 import clientPromise from '@lib/mongodb'
-import client from '@lib/redis'
 import { ClientDetails } from '@lib/helpers'
 import { nanoid } from 'nanoid'
 
 const LINKS_COLLECTION = 'links'
 const USERS_COLLECTION = 'users'
 
-export const cache = async (key: string, callback: Function, timeout = 600) => {
-	if (!client.isReady) {
-		await client.connect()
-	}
+export const cache = async (key: string, callback: Function) => {
+	const db = (await clientPromise).db()
+	const safeBrowsingCache = db.collection('safeBrowsingCache')
 
-	const cachedResult = await client.get(key)
+	const cachedResult = await safeBrowsingCache.findOne({ key })
+
 
 	if (cachedResult) {
-		return JSON.parse(cachedResult)
-	} else {
-		const result = await callback()
-		if (result) {
-			await client.setEx(key, timeout, JSON.stringify(result))
+		if (cachedResult.timestamp + 86400 < Date.now()) {
+			const result = await callback()
+			safeBrowsingCache.updateOne({ key }, { $set: { timestamp: Date.now(), result } })
 			return result
 		}
+		return cachedResult.result
+	} else {
+		const result = await callback()
+		safeBrowsingCache.insertOne({ key, timestamp: Date.now(), result })
+		return result
 	}
 }
 
