@@ -11,9 +11,12 @@ export const cache = async (key: string, callback: Function) => {
 
 	const cachedResult = await safeBrowsingCache.findOne({ key })
 
+	const cachedTimestamp = cachedResult ? cachedResult.timestamp : 0
+	const currentTimestamp = Date.now()
+	const cachedTimeout = 86400000
 
 	if (cachedResult) {
-		if (cachedResult.timestamp + 86400 < Date.now()) {
+		if (cachedTimestamp + cachedTimeout < currentTimestamp) {
 			const result = await callback()
 			safeBrowsingCache.updateOne({ key }, { $set: { timestamp: Date.now(), result } })
 			return result
